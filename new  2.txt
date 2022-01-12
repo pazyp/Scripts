@@ -1,0 +1,42 @@
+AtkindDatabase	IPM_ATKINS	atkins123	
+DevIPM_On_Dev	Dev_IPM		atkins123
+DEV_UCM			DEV_OCS		atkins123
+SOAINFRA_On_DEV DEVTEST1_SOAINFRA password
+Dev_MDS			DEVTEST1_MDS		password
+
+
+DEV1_ORASDPM DEVTEST1_ORASDPM password
+
+
+mds-osm
+
+
+AtkinsDatabase - OK
+AtkinsDatabaseXA - OK
+EDNDataSource - OK
+EDNLocalTxDataSource - OK
+mds-owsm - OK
+mds-soa - OK
+OraSDPMDataSource - OK
+SequenceSQLDataSource - OK
+SOADataSource - OK
+SOALocalTxDataSource - OK
+StaffViewDataSource - ??
+
+
+vcp
+
+
+SGBLCY6152	IMPDEV01 1521
+
+AtkinsDatabase - Chnaged
+AtkinsDatabaseXA - Chnaged
+EDNDataSource - chanaged
+EDNLocalTxDataSource - changed
+mds-owsm - chnaged
+mds-soa - chnaged
+OraSDPMDataSource - chnaged
+SequenceSQLDataSource - ??
+SOADataSource - Changed
+SOALocalTxDataSource - Changed
+StaffViewDataSource - ??

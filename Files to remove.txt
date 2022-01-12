@@ -1,0 +1,17 @@
+nqquery/server.log
+
+
+
+/obiauat1/apps/obiee/MWHome/instances/instance1/diagnostics/logs/OracleBIServerComponent/coreapplication_obis1
+
+
+
+
+
+sawlogs
+/obiauat1/apps/obiee/MWHome/instances/instance1/diagnostics/logs/OracleBIPresentationServicesComponent/coreapplication_obips1
+
+
+
+Server tmp
+/obiauat1/apps/obiee/MWHome/instances/instance1/tmp/OracleBIServerComponent/coreapplication_obis1/obis_temp

@@ -1,0 +1,36 @@
+nohup /dbascripts_ebs/bin/cloning/clone_ebs.sh pumpkin 21park perro erasure peanut potatoe pi33ahut 020615 pj1 | tee /dbascripts_ebs/log/clone_ebs_ps1.log
+
+test1=`sqlplus -s system/${ebs_system_pass}@ebs << !
+set pagesize 0 feedback off verify off heading off echo off
+select 'pass' from dual;
+
+
+nohup ksh /dbascripts_ebs/bin/cloning/clone_ebs.sh eagles prodigy perro erasure peanut potatoe pi33ahut 020615 pj1 | tee /dbascripts_ebs/log/clone_ebs_ps1.log &
+
+nohup ksh /dbascripts_ebs/bin/cloning/clone_ebs.sh eagles prodigy perro erasure police pixies p1nkfl0yd 180215 pse > /dbascripts_ebs/log/clone_ebs_pse.log &
+
+
+catalog start with '/backup1/sgblcy3002/APPPRD/RMAN/';
+
+
+catalog start with '/oraprd/db/apps_st/fra/';
+
+if [[ ! -d /backup_ebs/EBS_${apps_backup_date} ]];then
+  echo "apps backup directory not found"
+  exit
+fi
+
+
+select current_scn from v$database;
+
+drsgblcy3002
+
+DRSGBLCY3002
+
+
+ALTER SYSTEM SET STANDBY_FILE_MANAGEMENT=MANUAL;
+ALTER DATABASE ADD LOGFILE ('/oraprd/db/apps_st/data01/online_redo01.log') SIZE 200M;
+ALTER DATABASE ADD LOGFILE ('/oraprd/db/apps_st/data02/online_redo02.log') SIZE 200M;
+ALTER DATABASE ADD LOGFILE ('/oraprd/db/apps_st/data01/online_redo03.log') SIZE 200M;
+ALTER DATABASE ADD LOGFILE ('/oraprd/db/apps_st/data02/online_redo03.log') SIZE 200M;
+ALTER SYSTEM SET STANDBY_FILE_MANAGEMENT=AUTO;

@@ -1,0 +1,164 @@
+Current scenario:
+
+
+I have two nodes in the cluster presently.
+
+
+Host names :
+
+
+- host01.example.com
+
+
+- host02.example.com
+
+
+Node to be added : 
+
+- host03.example.com
+
+
+Procedure:
+
+
+————————————
+
+ Prepare the machine for third node
+
+————————————
+
+
+ — Set kernel parameters
+
+ — Install required rpm’s
+
+ — Create users/groups
+
+  — configure oracleasm
+
+root@host03#oracleasm configure -i
+
+                       oracleasm exit
+
+                       oracleasm init
+
+                       oracleasm scandisks
+
+                       oracleasm listdisks
+
+
+              all asm disks will be listed
+
+
+– Configure ssh connectivity for grid user among all 3 nodes –
+
+
+   –  On  node3 as grid user
+
+
+[grid@host03 .ssh]$ssh-keygen -t rsa
+
+ 
+
+                             ssh-keygen -t dsa
+
+ 
+
+                             cd /home/grid/.ssh
+
+                              cat *.pub > host03
+
+ 
+
+                             scp host03 host01:/home/grid/.ssh/
+
+
+[grid@host03 .ssh] $ssh host01 
+
+                           – Enter password
+
+
+ [grid@host01 ~]$cd /home/grid/.ssh
+
+                          
+
+                          cat host03 >> authorized_keys
+
+ 
+
+                         scp authorized_keys host02:/home/grid/.ssh/
+
+                         scp authorized_keys host03:/home/grid/.ssh/
+
+
+– Test ssh connectivity on all 3 nodes as grid user –
+
+– run following  on all 3 nodes twice as grid user–
+
+
+echo ssh host01 hostname >> a.sh
+
+echo ssh host02 hostname >> a.sh
+
+echo ssh host03 hostname >> a.sh
+
+echo ssh host01-priv hostname >> a.sh
+
+echo ssh host02-priv hostname >> a.sh
+
+echo ssh host03-priv hostname  >> a.sh
+
+ 
+
+chmod +x a.sh
+
+ 
+
+./a.sh
+
+
+– Run cluster verify to check that host03 can be added as node –
+
+grid host01# cluvfy stage -pre crsinst -n host03 -verbose
+
+
+– if time synchronization problem, restart ntpd service on each node
+
+– Error grid is not a member of dba group – ignore
+
+
+grid@host01 ~]$. oraenv –+ASM1
+
+
+[grid@host01 ~]$ cd /u01/app/11.2.0/grid/oui/bin
+
+
+– Add node 
+
+
+[grid@host01 bin]$./addNode.sh -silent “CLUSTER_NEW_NODES={host03}” “CLUSTER_NEW_VIRTUAL_HOSTNAMES={host03-vip}”
+
+
+
+– Execute oraInstroot.sh and root.sh on node3  as root –
+
+
+[root@host03]#/u01/app/oraInventory/oraInstroot.sh
+
+                         /u01/app/11.2.0/grid/root.sh
+
+
+
+– check from host01 that node has been added –
+
+
+host01 grid > crsctl stat res -t
+
+
+– Start any resources if they are not up already –
+
+
+host01 grid > crsctl start resource <resource name>
+
+
+After you have added a node, in case you want to clone database home on that node, please click here.

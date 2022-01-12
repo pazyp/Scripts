@@ -1,0 +1,95 @@
+#!/bin/ksh
+#
+#########################################################
+#  NAME:email_dac_restart.sh                            #
+#  AUTHOR: Andrew Pazikas                               #
+#  DESC: Makes sure dac is running and restarts if not  #
+#  DATE: 18/1/13                                        #
+#  VERSION 1.1                                          #
+#  CHANGE LOG:                                          #
+#              AP    19/04/2013 Add DW & INFA Check     #
+#                                                       #
+#                                                       #
+#########################################################
+#
+#set -x
+
+. $HOME/.profile
+
+#set -x
+####################CHECK DAC PROCESS IS RUNNING########################
+
+ps -ef |grep '/usr/jdk/instances/jdk1.6.0/bin/sparcv9/java -server -Xmn500m -Xms2048m -Xmx204' >DAC_ps_status.log
+sleep 5
+dac_ps_status=$(cat DAC_ps_status.log  |grep -i '/usr/jdk/instances/jdk1.6.0/bin/sparcv9/java -server -Xmn500m -Xms2048m -Xmx204'  |wc -l)
+
+###################CHECK DAC CAN CONNECT TO DATAWAREHOUSE###########################
+cd $DAC_HOME
+
+$DAC_HOME/dacCmdLine.sh DatabaseStatus >Database_status.log
+sleep 5
+
+dac_dw_status=$(cat Database_status.log |grep -i 'DataWarehouse - success' |wc -l)
+
+###################CHECK DAC CAN CONNECT TO INFORMATICA#############################
+cd $DAC_HOME
+
+$DAC_HOME/dacCmdLine.sh InformaticaStatus >Informatica_status.log
+sleep 5
+
+dac_infa_status=$(cat Informatica_status.log |grep -i 'Informatica_IS_dev1 - online' |wc -l)
+
+sleep 5
+
+################################SCRIPT MAIN#############################################
+
+ps -ef |grep '/usr/jdk/instances/jdk1.6.0/bin/sparcv9/java -server -Xmn500m -Xms2048m -Xmx204' >DAC_ps_status.log
+if [ ${dac_ps_status} -gt 0 ]
+then
+     echo 'do nothing PS'
+else
+         cd $DAC_HOME
+                   nohup $DAC_HOME/startserver.sh &
+                   sleep 60
+                   tail -20 $DAC_HOME/nohup.out | mailx -s 'DAC Attepmpted Restart  (Server not Running)  UAT2' andrew.pazikas@velos-it.com
+                   sleep 10
+fi
+
+cd $DAC_HOME
+$DAC_HOME/dacCmdLine.sh DatabaseStatus >Database_status.log
+if [ ${dac_dw_status} -gt 0 ]
+then
+   echo 'do nothing DW'
+else
+   cd $DAC_HOME
+            $DAC_HOME/stopserver.sh
+            sleep 30
+            mailx -s 'DAC Server Down Check DW Connection' andrew.pazikas@velos-it.com < nohup.out
+            sleep 10
+fi
+
+cd $DAC_HOME
+$DAC_HOME/dacCmdLine.sh InformaticaStatus >Informatica_status.log
+if [ ${dac_infa_status} -gt 0 ]
+then
+   echo 'do nothing INFA'
+else
+   cd $DAC_HOME
+            $DAC_HOME/stopserver.sh
+            sleep 30
+            mailx -s 'DAC Server Down Check INFA Connection' andrew.pazikas@velos-it.com < nohup.out
+            sleep 10
+fi
+
+
+if ps -ef | grep '/usr/jdk/instances/jdk1.6.0/bin/sparcv9/java -server -Xmn500m -Xms2048m -Xmx204'
+then
+     echo 'do nothing'
+    ## tail -1 $DAC_HOME/nohup.out |  mailx -s 'DAC Running TST1 ' andrew.pazikas@velos-it.com
+else
+         cd $DAC_HOME
+                   nohup $DAC_HOME/startserver.sh &
+fi
+
+exit
+EOF

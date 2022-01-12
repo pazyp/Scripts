@@ -1,0 +1,89 @@
+create user infa identified by infa  ;
+create user dac identified by dac ;
+create user olap identified by olap
+ 
+
+create tablespace infad datafile '/obidprd1/data01/prd1/infad01.dbf' size 1024m autoextend on next 512m maxsize 20480m ;
+create tablespace infai datafile '/obidprd1/data01/prd1/infai01.dbf' size 1024m autoextend on next 512m maxsize 20480m ;
+create tablespace olapd datafile '/obidprd1/data01/prd1/olapd01.dbf' size 1024m autoextend on next 512m maxsize 20480m ;
+create tablespace olapi datafile '/obidprd1/data01/prd1/olapi01.dbf' size 1024m autoextend on next 512m maxsize 20480m ;
+create tablespace dacd datafile '/obidprd1/data01/prd1/dacd01.dbf' size 1024m autoextend on next 512m maxsize 20480m ;
+create tablespace daci datafile '/obidprd1/data01/prd1/daci01.dbf' size 1024m autoextend on next 512m maxsize 20480m ;
+ 
+
+alter user infa default tablespace infad ;
+alter user dac  default tablespace dacd ;
+alter user olap default tablespace olapd ;
+alter user infa quota unlimited on infad ;
+alter user infa quota unlimited on infai ; 
+alter user dac quota unlimited on dacd ; 
+alter user dac quota unlimited on daci ; 
+alter user olap quota unlimited on olapd ; 
+alter user olap quota unlimited on olapi ; 
+ 
+
+ 
+ 
+GRANT CREATE TYPE TO olap ;
+GRANT CREATE TABLE TO olap ;
+GRANT CREATE CLUSTER TO olap ;
+GRANT CREATE TRIGGER TO olap ;
+GRANT CREATE OPERATOR TO olap ;
+GRANT CREATE SEQUENCE TO olap ;
+GRANT CREATE INDEXTYPE TO olap ;
+GRANT CREATE PROCEDURE TO olap ;
+GRANT Connect TO olap ;
+GRANT CREATE VIEW  TO olap ;
+GRANT CREATE TABLE  TO olap ;
+GRANT ALTER SESSION  TO olap ;
+GRANT CREATE CLUSTER  TO olap ;
+GRANT CREATE SESSION  TO olap ;
+GRANT CREATE SYNONYM  TO olap ;
+GRANT CREATE SEQUENCE  TO olap ;
+GRANT CREATE DATABASE LINK  TO olap ;
+
+GRANT CREATE TYPE TO infa ;
+GRANT CREATE TABLE TO infa ;
+GRANT CREATE CLUSTER TO infa ;
+GRANT CREATE TRIGGER TO infa ;
+GRANT CREATE OPERATOR TO infa ;
+GRANT CREATE SEQUENCE TO infa ;
+GRANT CREATE INDEXTYPE TO infa ;
+GRANT CREATE PROCEDURE TO infa ;
+GRANT Connect TO infa ;
+GRANT CREATE VIEW  TO infa ;
+GRANT CREATE TABLE  TO infa ;
+GRANT ALTER SESSION  TO infa ;
+GRANT CREATE CLUSTER  TO infa ;
+GRANT CREATE SESSION  TO infa ;
+GRANT CREATE SYNONYM  TO infa ;
+GRANT CREATE SEQUENCE  TO infa ;
+GRANT CREATE DATABASE LINK  TO infa ;
+
+GRANT CREATE TYPE TO dac ;
+GRANT CREATE TABLE TO dac ;
+GRANT CREATE CLUSTER TO dac ;
+GRANT CREATE TRIGGER TO dac ;
+GRANT CREATE OPERATOR TO dac ;
+GRANT CREATE SEQUENCE TO dac ;
+GRANT CREATE INDEXTYPE TO dac ;
+GRANT CREATE PROCEDURE TO dac ;
+GRANT Connect TO dac ;
+GRANT CREATE VIEW  TO dac ;
+GRANT CREATE TABLE  TO dac ;
+GRANT ALTER SESSION  TO dac ;
+GRANT CREATE CLUSTER  TO dac ;
+GRANT CREATE SESSION  TO dac ;
+GRANT CREATE SYNONYM  TO dac ;
+GRANT CREATE SEQUENCE  TO dac ;
+GRANT CREATE DATABASE LINK  TO dac ;
+  
+
+grant connect , resource to infa ;
+grant connect , resource to dac ;
+grant connect , resource to olap ;
+ 
+
+CREATE ROLE SSE_ROLE ;
+GRANT DBA TO SSE_ROLE ;
+GRANT SSE_ROLE TO OLAP ;

@@ -1,0 +1,32 @@
+INodes
+
+df -i 
+or
+df -F ufs -o i
+
+
+then to list folders with large numbers of files
+
+for i in `find . -type d `; do echo `ls -a $i | wc -l` $i; done | sort -n
+
+or
+
+du -H | sort -nr
+
+look for temp files that can be reomved
+
+run below and change mtime gradually lower it if there are 2many files
+
+
+
+find . -type f -name '*.log' -mtime +30 -exec rm -f {} \;
+
+find . -type f -name "*.trc" -mtime +1 -exec rm -f {} \;
+
+find . -type f -name "*.trc" -amin +120 -exec rm  {} \;
+
+TOP 10 files by size
+ 
+
+find . -type f  -exec ls -h  {} \;| awk '{print $7,$11}' | sort -n | tail -10
+

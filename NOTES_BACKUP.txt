@@ -1,0 +1,2186 @@
+#
+####################################################
+####################################################
+####################################################
+######                                        ######
+######      Title - NOTES                     ######
+######      Author - Andrew Pazikas           ######      
+######                                        ######
+####################################################
+####################################################
+####################################################
+#
+#
+#----------------------------------------------------------------------------------------------
+# SOA JVM Increase for SOAPRD performed by AP 29/01/14
+#----------------------------------------------------------------------------------------------
+
+if [ "${SERVER_NAME}" = "" ] || [ "${SERVER_NAME}" = "d03-c00-a01" ]; then
+  DEFAULT_MEM_ARGS="-Xms512m -Xmx1024m"
+  PORT_MEM_ARGS="-Xms768m -Xmx1536m"
+elif [ "${SERVER_NAME}" = "" ] || [ "${SERVER_NAME}" = "d03-c01-s01" ]; then
+  DEFAULT_MEM_ARGS="-Xms512m -Xmx1024m"
+  PORT_MEM_ARGS="-Xms768m -Xmx1536m"
+else
+  DEFAULT_MEM_ARGS="-Xms768m -Xmx4096m"
+  PORT_MEM_ARGS="-Xms768m -Xmx4096m"
+fi
+
+#-----------------------------------------------------------------------------------------------
+# End of change 29/01/14 by AP
+#-----------------------------------------------------------------------------------------------
+
+######################### STOPALL.sh #####################################
+/export/home/obiadev1/stopAll.sh
+opmnctl stopall
+
+ ${DOMAIN_HOME}/bin/stopManagedWebLogic.sh bi_server1
+
+${DOMAIN_HOME}/bin/stopWebLogic.sh
+
+kill -9 `jps |grep -i node |awk '{print $1}'`
+
+
+################ SOLARIS USERS #############################
+cat /etc/passwd
+
+
+yum install binutils-2*x86_64* glibc-2*x86_64* nss-softokn-freebl-3*x86_64* glibc-2*i686* nss-softokn-freebl-3*i686* compat-libstdc++-33*x86_64* 
+
+yum install glibc-2*x86_64* nss-softokn-freebl-3*x86_64*
+yum install glibc-2*i686* nss-softokn-freebl-3*i686*
+yum install compat-libstdc++-33*x86_64*
+yum install glibc-common-2*x86_64*
+yum install glibc-devel-2*x86_64*
+yum install glibc-devel-2*i686*
+yum install glibc-headers-2*x86_64*
+yum install elfutils-libelf-0*x86_64*
+yum install elfutils-libelf-devel-0*x86_64*
+yum install gcc-4*x86_64*
+yum install gcc-c++-4*x86_64*
+yum install ksh-*x86_64*
+yum install libaio-0*x86_64*
+yum install libaio-devel-0*x86_64*
+yum install libaio-0*i686*
+yum install libaio-devel-0*i686*
+yum install libgcc-4*x86_64*
+yum install libgcc-4*i686*
+yum install libstdc++-4*x86_64*
+yum install libstdc++-4*i686*
+yum install libstdc++-devel-4*x86_64*
+yum install make-3.81*x86_64*
+yum install numactl-devel-2*x86_64*
+yum install sysstat-9*x86_64*
+yum install compat-libstdc++-33*i686*
+yum install compat-libcap*
+
+
+yum install glibc-2*x86_64* nss-softokn-freebl-3*x86_64* glibc-2*i686* nss-softokn-freebl-3*i686* compat-libstdc++-33*x86_64* glibc-common-2*x86_64* glibc-devel-2*x86_64* glibc-devel-2*i686* glibc-headers-2*x86_64* elfutils-libelf-0*x86_64* elfutils-libelf-devel-0*x86_64* gcc-4*x86_64* gcc-c++-4*x86_64* ksh-*x86_64* libaio-0*x86_64* libaio-devel-0*x86_64* libaio-0*i686* libaio-devel-0*i686* libgcc-4*x86_64* libgcc-4*i686* libstdc++-4*x86_64* libstdc++-4*i686* libstdc++-devel-4*x86_64* make-3.81*x86_64* numactl-devel-2*x86_64* sysstat-9*x86_64* compat-libstdc++-33*i686* compat-libcap* -y
+
+########################## Creating users #########################
+oraw012:x:512:500::/home/oraw012:/bin/bash
+vitsupp:x:500:500::/home/vitsupp:/bin/bash
+
+groupadd vitsupp
+
+useradd lad_maint -p Velos123 -g applmgr -b /home/ -s /bin/bash 
+useradd -m -d /export/home/lad_maint -s /usr/bin/ksh -c "Ladbrokes APPLCSF Maintence User" -U lad_maint
+useradd paz -p Velos123 -g paz -b /home/paz -s /bin/bash 
+
+userdel -r vitsupp
+
+usermod -a -G vitsupp oras002
+
+############### Mounting NFS shares #########################
+mount -t nfs 10.10.160.22:/media/software/ /media/software
+
+10.10.160.22:/media/software     /media/software nfs     soft,rw,wsize=8192,rsize=8192,intr,user,timeo=15
+
+
+
+U001=
+        (DESCRIPTION=
+                (ADDRESS=(PROTOCOL=tcp)(HOST=v10emzs100.ncl.emss.data.net)(PORT=1522))
+            (CONNECT_DATA=
+                (SERVICE_NAME=U001)
+                (INSTANCE_NAME=U001)
+            )
+        )
+
+
+
+opatch apply -invPtrLoc /export/middleware/AIA/oraInst.loc -oh /export/middleware/AIA -jre /export/jrockit
+
+
+exit
+df
+mount /dev/cdrom /media/OL
+ls /media
+mount /dev/cdrom /media/ol
+df
+exit
+ls
+
+####### disable yum repos ########
+https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/sec-Managing_Yum_Repositories.html
+yum repolist all
+yum-config-manager --disable public_ol6_latest
+yum update
+
+############### ODI CRED MAP #########################
+
+createCred(map="oracle.odi.credmap", key="SUPERVISOR", user="SUPERVISOR", password="Velos123", desc="ODI Login") 
+createCred(map="oracle.odi.credmap", key="base_domain", user="weblogic", password="Velos123", desc="WLS credentials")
+createCred(map="oracle.apps.security", key="SUPERVISOR", user="SUPERVISOR", password="Velos123", desc="ODI Login") 
+createCred(map="oracle.apps.security", key="weblogic", user="SUPERVISOR", password="Velos123", desc="ODI Login")
+createCred(map="oracle.aia.security", key="weblogic", user="VCP_ODI_REPO", password="Velocity123", desc="")
+
+
+############### DB BLOCK RECOVERY #################
+select OWNER, SEGMENT_NAME, SEGMENT_TYPE from DBA_EXTENTS where file_id = 12 and 221192 between block_id and (block_id + blocks - 1);
+
+OWNER	SEGMENT_NAME			SEGMENT_TYPE
+------- ----------------------  ---------------------------------------------------
+OLAP	W_PURCH_CYCLE_LINE_F	TABLE
+
+
+select t.ts#, s.header_file, s.header_block
+from v$tablespace t, dba_segments s
+where s.segment_name='W_PURCH_CYCLE_LINE_F'
+and t.name = s.tablespace_name;
+
+       TS# HEADER_FILE HEADER_BLOCK
+---------- ----------- ------------
+         6           6         3678
+
+dbv userid=system/Velos389 SEGMENT_ID=6.6.3678
+
+################# DEMANTRA ###################
+
+Here are the possible statuses: 
+-1, -2 : The engine failed in the initialization phase.  Which means, before the engine manager created the engines. 
+ 0 : The engine stopped in the optimization phase.  Which means, after the engines were created. 
+ 1: The engine finished the run successfully. 
+ 2: Forecast was never calculated for the relevant column that is mentioned in FORE_COLUMN_NAME.
+ 
+select status, engine, engine_version,fore_column_name, START_DATE, TOTAL_RUN_TIME from forecast_history;
+ 
+Engine status
+http://10.10.160.23:8082/engineManager/EngineManagerStarterServlet?command=status
+
+Start Engine
+http://10.10.160.23:8082/engineManager/EngineManagerStarterServlet?command=start&mode=1&profile_id=1
+
+Restart Engine
+Note: Use this method if the Engine is already running. If the Engine is not running, this command will have 
+no effect.) - doesnt work 
+http://10.10.160.29:8082/engineManager/EngineManagerStarterServlet?command=restart&mode=1&profile_id=1 
+
+Stop Engine
+http://10.10.160.23:8082/engineManager/EngineManagerStarterServlet?command=stop&mode=1&profile_id=1
+
+
+http://10.10.160.23:8082/engineManager
+
+    <Entry>
+        <Key argument="EngineUnixPortConfig"/>
+        <Value type="int" argument="8083"/></Entry>
+
+###### HEALTH CHECK DB ################	
+How to Perform a Health Check on the Database (Doc ID 122669.1)
+
+select INDEX_NAME,INDEX_TYPE from all_indexes where TABLE_NAME='REFERENCE_INSTANCE'
+SQL> /
+
+INDEX_NAME                     INDEX_TYPE
+------------------------------ ---------------------------
+COMPOSITE_INSTANCE_VELOS_1     NORMAL
+REFERENCE_INSTANCE_VELOS_1     NORMAL
+REFERENCE_INSTANCE_ID          NORMAL
+REFERENCE_INSTANCE_CO_ID       NORMAL
+REFERENCE_INSTANCE_CDN_STATE   NORMAL
+REFERENCE_INSTANCE_STATE       NORMAL
+REFERENCE_INSTANCE_TIME_CDN    FUNCTION-BASED NORMAL
+REFERENCE_INSTANCE_ECID        NORMAL
+
+8 rows selected.
+
+
+SQL> ANALYZE INDEX REFERENCE_INSTANCE_CDN_STATE COMPUTE STATISTICS;
+
+Index analyzed.
+
+SQL> ANALYZE INDEX COMPOSITE_INSTANCE_VELOS_1 VALIDATE STRUCTURE;
+
+Index analyzed.
+
+################ ACCOUNT UNLOCK #####################
+ALTER USER DBSNMP identified by dbsnmp ACCOUNT UNLOCK;
+
+################ Export DB schema #################
+CONN / AS SYSDBA
+ALTER USER scott IDENTIFIED BY tiger ACCOUNT UNLOCK;
+
+
+CREATE OR REPLACE DIRECTORY dumpdir AS '/oradumps/POGBOLY1/datapump';
+GRANT READ, WRITE ON DIRECTORY dumpdir TO system;
+
+ velocity/devel0p23 schemas=DEV_SOAINFRA directory=dumpdir dumpfile=ddev_soainfra.dmp logfile=expdpdevsoainfra.log
+expdp system/Velocity123 full=Y directory=dem_exports PARALLEL=4 METRICS=Y dumpfile=demp007.dmp logfile=expdpdemp007.log
+
+expdp system/manager schemas=APPS,APPLSYS directory=dumpdir dumpfile=APPS.dmp logfile=expdpapps.log
+expdp ar/editors tables=ra_interface_lines_all,ra_interface_salescredits_all,ra_interface_distributions_all,ra_interface_errors_all  directory=dumpdir dumpfile=AR_TABLES.dmp logfile=expdAR_TABLES.log
+
+expdp \'/ as sysdba\' tables=OLY_PEG_MARKET_OWNER.BATCHOUTPR184_TS directory=dumpdir dumpfile=BATCHOUTPR184_TS.dmp logfile=expdp_BATCHOUTPR184.log
+
+impdp system/Velos123 directory=dem_exports dumpfile=dems004.dmp logfile=impdpdems004.log 
+impdp \'/ as sysdba\ full=Y directory=dumpdir PARALLEL=4 METRICS=Y dumpfile=W007.dmp logfile=impdpW007.dmp
+
+expdp \'/ as sysdba\ schemas=HFM_OWNER ESTIMATE_ONLY=Y
+
+
+create user demantra identified by Velos123 default tablespace TS_DP;
+
+grant create session to demantra;
+
+grant unlimited tablespace to demantra;
+
+grant resource to demantra;
+
+grant sysdba to demantra;
+
+impdp \"/ as sysdba\" directory=dem_imports dumpfile=dems004.dmp logfile=impdpdems004.log
+
+################ X11 Forwarding ######################
+Edit the /etc/ssh/sshd_config file, and uncomment the following line:
+X11Forwarding Yes
+
+/etc/init.d/sshd restart	
+
+check hostsfile to ensure correct
+
+################ Extending/shrinking datafiles ####################
+alter database datafile '/u03/oradata/OBIDEV/bawdevind02.dbf' autoextend on next 1g maxsize 2g;
+
+ALTER DATABASE DATAFILE '/u03/oradata/OBIDEV/bawdevind02.dbf' RESIZE 1G;
+
+###################### ant -f aia pip ###############################
+
+ant -f $AIA_HOME/Infrastructure/Install/AID/AIAInstallDriver.xml -DDeploymentPlan=$AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDEDP.xml -DPropertiesFile=$AIA_HOME/aia_instances/AIA/config/AIAInstallProperties.xml -l $AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDE.log
+
+ant -verbose -f $AIA_HOME/Infrastructure/Install/AID/AIAInstallDriver.xml -DDeploymentPlan=$AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDEDP.xml -DPropertiesFile=$AIA_HOME/aia_instances/AIA_VCP/config/AIAInstallProperties.xml -l $AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDE.log
+
+ant Uninstall -f $AIA_HOME/Infrastructure/Install/AID/AIAInstallDriver.xml -DPropertiesFile=$AIA_HOME/aia_instances/AIA/config/AIAInstallProperties.xml  -DDeploymentPlan=$AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDEUndeployDP.xml -l $AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDEUndeployDP.log
+
+################### DB LINK ######################
+
+CREATE DATABASE LINK "VCP_TO_ODIWORKREP"
+CONNECT TO T005_ODI_REPO IDENTIFIED BY Velocity123
+USING '(DESCRIPTION=
+(ADDRESS_LIST=
+(ADDRESS=(PROTOCOL=tcp)
+(HOST=10.10.160.38)
+(PORT=1526)))
+(CONNECT_DATA=(SID=T005)))';
+
+select sysdate from dual@VCP_TO_ODIWORKREP;
+
+#######################################################################
+
+dacbw03 auth key - CEAF2DA7DF2D7DC4D3A9674466F82FF1
+
+################## GRANT TO ALL TABLES IN SCHEMA ######################
+spool /tmp/grants.sql
+select 'grant all on '||table_name||' to apps;'
+from dba_tables where owner='DEMANTRA';
+spool off
+
+Login as user and run @/tmp/grants.sql
+
+/obibw03/dac/bifoundation/dac
+
+################ ORA 11g ACL ##############################
+
+select * from DBA_NETWORK_ACLS;   - 0 rows returned
+select * from DBA_NETWORK_ACL_PRIVILEGES;    - 0 rows  
+
+HOST       LOWER_PORT UPPER_PORT ACL                       ACLID
+---------- ---------- ---------- ------------------------- --------------------------------
+*                                /sys/acls/OracleEBS.xml   6111A5EE3F7E9578E0402382C8136535
+localhost        8080       8080 /sys/acls/demantra.xml    00F88E3E900C73DAE0531FA00A0A636B
+
+
+
+BEGIN
+  DBMS_NETWORK_ACL_ADMIN.create_acl (
+    acl          => 'demantraEngine.xml', 
+    description  => 'LDAP ACL',
+    principal    => 'APPS_PROD_01',
+    is_grant     => TRUE, 
+    privilege    => 'connect',
+    start_date   => SYSTIMESTAMP,
+    end_date     => NULL);
+END;
+/
+
+BEGIN
+  DBMS_NETWORK_ACL_ADMIN.ASSIGN_ACL (
+     acl         => '/sys/acls/demantra.xml',
+     host        => '10.10.160.111',
+	lower_port  =>  8080,
+	upper_port  =>  8084);
+END;
+ /
+ 
+begin
+DBMS_NETWORK_ACL_ADMIN.UNASSIGN_ACL (acl => '/sys/acls/demantra.xml', host => 'localhost', lower_port=>8080, upper_port=>8080);
+DBMS_NETWORK_ACL_ADMIN.ASSIGN_ACL (acl => '/sys/acls/demantra.xml', host => '10.10.160.87', lower_port=>8083, upper_port=>8084);
+commit;
+END;
+/ 
+
+
+
+CREATE OR REPLACE DIRECTORY DAT_DIR AS '/home/oras002/demantra_exports';
+GRANT READ, WRITE ON DIRECTORY DAT_DIR TO DEMANTRA;
+
+GRANT read, write ON DIRECTORY DAT_DIR TO DEMANTRA;
+GRANT read, write ON DIRECTORY BAD_DIR TO DEMANTRA;
+GRANT read, write ON DIRECTORY LOG_DIR TO DEMANTRA; 
+
+
+########################## DBA USER ROLES ############################
+object privs
+------------
+select owner||'.'||table_name, privilege from dba_tab_privs where grantee = '&1' order by 1,2;
+
+sys privs
+---------
+select privilege from dba_sys_privs where grantee = '&1' order by 1;
+
+roles
+-----
+select distinct d.granted_role, r.granted_role
+from dba_role_privs d, role_role_privs r
+where d.granted_role = r.role (+)
+and d.granted_role in (select drp.granted_role from dba_role_privs drp where grantee='&1');
+
+
+role obj privs
+--------------
+select owner||'.'||table_name, privilege from role_tab_privs where role = '&1' order by 1;
+
+
+role sys privs
+--------------
+select privilege from role_sys_privs where role = '&1' order by 1;
+
+
+29:AGBARR:FUSION_TR:DB:orat007:10.10.160.88:V06BASW01
+30:AGBARR:FUSION_TR:APP:ofmt007:10.10.160.86:V06BASW01
+31:AGBARR:DEMANTRA_TR:APP:dem007:10.10.160.87:V06BASW01
+32:AGBARR:EBS_TR:APP:applt007:10.10.160.85:V06BASW01
+33:AGBARR:EBS_TR:DB:orat007:10.10.160.85:V06BASW01
+
+10.10.160.22:/export/fmw/soap/w003/VCP    /export/fmw/soap/w003/VCP nfs
+
+DBMS_NETWORK_ACL_ADMIN.ASSIGN_ACL (acl => '/sys/acls/demantra.xml', host => '10.10.160.23', lower_port=>8080, upper_port=>8084);
+
+iambprcumb
+agbarr_bpr_cumb
+
+########### Ebiz URL ##################
+
+
+###################### 2020 RAC DB DOWN ################
+login as root
+set oracle environment - . oraenvto one of the dbs eg JDEDEV1
+[root@ts-pri-db01 oracle]# . oraenv
+ORACLE_SID = [JDEDEV1] ? +ASM1
+crsctl stat res -t
+
+--------------------------------------------------------------------------------
+NAME           TARGET  STATE        SERVER                   STATE_DETAILS
+--------------------------------------------------------------------------------
+Local Resources
+--------------------------------------------------------------------------------
+ora.CRS.dg
+               ONLINE  ONLINE       ts-pri-db01
+ora.DATA.dg
+               ONLINE  ONLINE       ts-pri-db01
+ora.DATA_JDEPROD_TEMP.dg
+               ONLINE  ONLINE       ts-pri-db01
+ora.FRA.dg
+               ONLINE  ONLINE       ts-pri-db01
+ora.LISTENER.lsnr
+               ONLINE  ONLINE       ts-pri-db01
+ora.asm
+               ONLINE  ONLINE       ts-pri-db01              Started
+ora.gsd
+               OFFLINE OFFLINE      ts-pri-db01
+ora.net1.network
+               ONLINE  ONLINE       ts-pri-db01
+ora.ons
+               ONLINE  ONLINE       ts-pri-db01
+ora.registry.acfs
+               ONLINE  ONLINE       ts-pri-db01
+--------------------------------------------------------------------------------
+Cluster Resources
+--------------------------------------------------------------------------------
+ora.LISTENER_SCAN1.lsnr
+      1        ONLINE  ONLINE       ts-pri-db01
+ora.cvu
+      1        ONLINE  ONLINE       ts-pri-db01
+ora.jdedev.db
+      1        ONLINE  ONLINE       ts-pri-db01              Open
+ora.oc4j
+      1        ONLINE  ONLINE       ts-pri-db01
+ora.scan1.vip
+      1        ONLINE  ONLINE       ts-pri-db01
+ora.soadev.db
+      1        ONLINE  ONLINE       ts-pri-db01              Open
+ora.soaprd.db
+      1        ONLINE  ONLINE       ts-pri-db01              Open
+ora.trac.db
+      1        ONLINE  ONLINE       ts-pri-db01              Open
+ora.ts-pri-db01.vip
+      1        ONLINE  ONLINE       ts-pri-db01
+
+
+crsctl disable crs
+crsctl stop crs -f
+
+crsctl enable crs
+crsctl start crs
+#10-15min
+crsctl stat res -t
+
+####################### EMSS COLD SNAPSHOT ######################
+v06emdisk001:>
+v06emdisk001:>
+v06emdisk001:> shares
+v06emdisk001:shares (v06z001p001)> ls
+Properties:
+                          pool = v06z001p001
+
+Projects:
+                        DryRun
+               Nr-13019065-EBS
+                        biprd0
+                       default
+                       ebsprd3
+                       ebssupp
+                       ebsu002
+                       ebsu004
+                        verify
+
+Children:
+                      replication => Manage remote replication
+                           schema => Define custom property schema
+
+v06emdisk001:shares (v06z001p001)> set pool=v06z002p001
+                          pool = v06z002p001
+v06emdisk001:shares (v06z002p001)> shares
+error: invalid command "shares"
+v06emdisk001:shares (v06z002p001)> ls
+Properties:
+                          pool = v06z002p001
+
+Projects:
+             Nr-13019065-OBIEE
+                        backup
+                       default
+                       obiprd1
+                       obipw01
+                           ops
+                       solaris
+                        vmware
+
+Children:
+                      replication => Manage remote replication
+                           schema => Define custom property schema
+
+v06emdisk001:shares (v06z002p001)> select obipw01 snapshots
+v06emdisk001:shares (v06z002p001) obipw01 snapshots> ls
+Children:
+                        automatic => Configure automatic snapshots
+
+v06emdisk001:shares (v06z002p001) obipw01 snapshots> snapshot 20141107_cold_golden
+v06emdisk001:shares (v06z002p001) obipw01 snapshots>
+
+
+### Find and change owner #####
+find . -user <owner>  |awk '{print "chown <newowner>:<newgroup> \"" $0 "\""}'  | sh#
+
+DAC DEV1 key
+7ADB8CF924C63DB6765EE4964694AC84
+DAC UAT key
+A8B4542A85F66294C19F5ED5F79D552
+
+########## EBS Verison ###########
+sqlapps
+select RELEASE_NAME from FND_PRODUCT_GROUPS;
+
+######## EBS PACKAGE BODY ##################
+
+select LINE, TEXT from dba_source where owner='JVS' and name='XX_MONITORING';
+
+############ EMSS Cold snap shot ####################
+from ebssupp@v06emzs100
+zsa1
+shares
+select ebsprd3
+snapshots
+
+ls
+snapshow <useful_snapshot_name>
+e.g snapshot 20141204_cold_prepatching 
+ls
+
+v06emdisk001:shares ebsprd3 snapshots> ls (to make sure snapshot has been taken)
+
+######### Change maintance windows #########
+SQL> select window_name, repeat_interval, duration from dba_scheduler_windows order by window_name;
+WINDOW_NAME                    REPEAT_INTERVAL                                                        DURATION
+------------------------------ ---------------------------------------------------------------------- ------------------
+FRIDAY_WINDOW                  freq=daily;byday=FRI;byhour=22;byminute=0; bysecond=0                  +000 04:00:00
+MONDAY_WINDOW                  freq=daily;byday=MON;byhour=22;byminute=0; bysecond=0                  +000 04:00:00
+SATURDAY_WINDOW                freq=daily;byday=SAT;byhour=6;byminute=0; bysecond=0                   +000 20:00:00
+SUNDAY_WINDOW                  freq=daily;byday=SUN;byhour=6;byminute=0; bysecond=0                   +000 20:00:00
+THURSDAY_WINDOW                freq=daily;byday=THU;byhour=22;byminute=0; bysecond=0                  +000 04:00:00
+TUESDAY_WINDOW                 freq=daily;byday=TUE;byhour=22;byminute=0; bysecond=0                  +000 04:00:00
+WEDNESDAY_WINDOW               freq=daily;byday=WED;byhour=22;byminute=0; bysecond=0                  +000 04:00:00
+WEEKEND_WINDOW                 freq=daily;byday=SAT;byhour=07;byminute=0;bysecond=0                   +002 00:00:00
+WEEKNIGHT_WINDOW               freq=daily;byday=MON,TUE,WED,THU,FRI;byhour=05;byminute=0; bysecond=0  +000 08:00:00
+
+select * from dba_scheduler_wingroup_members order by 1,2;
+
+EXECUTE DBMS_SCHEDULER.SET_ATTRIBUTE('WEEKNIGHT_WINDOW','repeat_interval','freq=daily;byday=MON,TUE,WED,THU,FRI;byhour=02;byminute=0; bysecond=0');
+EXECUTE DBMS_SCHEDULER.SET_ATTRIBUTE('WEEKEND_WINDOW','repeat_interval',' freq=daily;byday=SAT;byhour=01;byminute=0;bysecond=0');
+
+EXECUTE DBMS_SCHEDULER.SET_ATTRIBUTE('MONDAY_WINDOW',   'repeat_interval','freq=daily;byday=MON;byhour=01;byminute=0; bysecond=0');
+EXECUTE DBMS_SCHEDULER.SET_ATTRIBUTE('TUESDAY_WINDOW',  'repeat_interval','freq=daily;byday=TUE;byhour=01;byminute=0; bysecond=0');
+EXECUTE DBMS_SCHEDULER.SET_ATTRIBUTE('WEDNESDAY_WINDOW','repeat_interval','freq=daily;byday=WED;byhour=01;byminute=0; bysecond=0');
+EXECUTE DBMS_SCHEDULER.SET_ATTRIBUTE('THURSDAY_WINDOW', 'repeat_interval','freq=daily;byday=THU;byhour=01;byminute=0; bysecond=0');
+EXECUTE DBMS_SCHEDULER.SET_ATTRIBUTE('FRIDAY_WINDOW',   'repeat_interval','freq=daily;byday=FRI;byhour=01;byminute=0; bysecond=0');
+EXECUTE DBMS_SCHEDULER.SET_ATTRIBUTE('SATURDAY_WINDOW', 'repeat_interval','freq=daily;byday=SAT;byhour=01;byminute=0; bysecond=0');
+EXECUTE DBMS_SCHEDULER.SET_ATTRIBUTE('SUNDAY_WINDOW',   'repeat_interval','freq=daily;byday=SUN;byhour=01;byminute=0; bysecond=0');
+
+SQL> select client_name, job_status, job_start_time, job_duration from dba_autotask_job_history order by job_start_time
+
+auto optimizer stats collection          SUCCEEDED                      22-FEB-12 10.00.07.951870 PM UTC    +000 03:31:40
+auto space advisor                       STOPPED                        22-FEB-12 10.00.07.971702 PM UTC    +000 03:59:52
+sql tuning advisor                       SUCCEEDED                      22-FEB-12 10.00.08.004047 PM UTC    +000 00:02:00
+
+###### DB AWR report #####
+cd $ORACLE_HOME/rdbms/admin/awrrpt.sql
+sqldba
+@awrrpt.sql
+
+@$ORACLE_HOME/rdbms/admin/awrrpt.sql
+
+Enter value for report_type: html
+Enter value for num_days: 2
+Enter value for begin_snap:2513
+Enter value for end_snap:2516
+Enter value for report_name: infa_awr_v2
+
+change name to .html move file to location with a web browser and open awr report.
+
+################################
+Enable the JDBC spy log.
+
+./infasetup.sh  updategatewaynode -cs  "jdbc:informatica:oracle://:;SID=;SpyAttributes=(log=(file)spy.log;linelimit=220;logTName=yes;timestamp=yes)"
+
+Replace with the actual SID value and with respective values.
+Example: ./infasetup.sh updategatewaynode -cs "jdbc:informatica:oracle://v06emzs101:1521;SID=PW01;SpyAttributes=(log=(file)infa_domain_spy.log;linelimit=220;logTName=yes;timestamp=yes)"
+Run TCPDUMP continuously.
+
+tcpdump -i net1 -w tcpdump.pcap '172.19.129.101' &
+
+nohup snoop -qro snoop .out -s 300 172.19.129.101,172.19.129.133 &
+
+('/orapw01/data01/PW01/redo01a.log('/orapw01/data01/PW01/redo01b.log') size 1G reuse;
+
+############## SAR ##############
+
+#CPU Load (per core)
+sar -P ALL -f /usr/adm/sa/sa19
+
+#RAM Load 
+sar -r
+
+#Swap used 
+sar -S
+
+#Load avg.
+sar -q 
+
+#I/O Transfer Rate
+sar -b 
+
+#Individual Block Device I/O Activities
+sar -d
+
+#Network stats
+sar -n DEV
+
+#All values 
+sar -A -f /usr/adm/sa/sa19 
+
+#### Gather stats ####
+#Gather DB stats
+EXEC DBMS_STATS.GATHER_DATABASE_STATS(ESTIMATE_PERCENT=>DBMS_STATS.AUTO_SAMPLE_SIZE,degree => 4);
+
+#gather schema stats manual
+Exec DBMS_STATS.GATHER_SCHEMA_STATS (ownname =>'DEMANTRA',estimate_percent=>DBMS_STATS.AUTO_SAMPLE_SIZE,degree=>4,cascade=>TRUE,options=>'GATHER STALE');
+exec dbms_utility.analyze_schema('DEMANTRA','ESTIMATE',estimate_percent =>50);
+
+#Gather individual table stats
+select table_name, last_analyzed from user_tables where table_name='MLOG$_SALES_DATA';
+
+Begin 
+DBMS_STATS.GATHER_TABLE_STATS (ownname => 'DEMANTRA',tabname => 'MLOG$_SALES_DATA',degree => 2,cascade => TRUE,METHOD_OPT => 'FOR COLUMNS SIZE AUTO',estimate_percent =>'auto');
+     END;
+ /
+
+#gather index stats	 
+exec DBMS_STATS.GATHER_INDEX_STATS(ownname => 'SCOTT',indname => 'EMP_I',estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE);	
+
+
+select OWNER, TABLE_NAME, LAST_ANALYZED
+        from dba_tab_statistics where table_name='X$KGLDP';  
+
+#### Fixed object tasks	####	
+exec dbms_stats.gather_fixed_objects_stats; 	
+
+### System Stats #####
+
+exec dbms_stats.gather_system_stats(); 	
+
+Manual during workload
+execute dbms_stats.gather_system_stats('start');
+execute dbms_stats.gather_system_stats('stop'); 
+execute dbms_stats.gather_system_stats('interval',60);  - for duration
+
+#delete stats
+Exec DBMS_STATS.DELETE_DATABASE_STATS (); 
+Exec DBMS_STATS.DELETE_SYSTEM_STATS (); 
+Exec DBMS_STATS.DELETE_DICTIONARY_STATS ();
+Exec DBMS_STATS.DELETE_FIXED_OBJECTS_STATS (); 
+Exec DBMS_STATS.DELETE_SCHEMA_STATS ('SCOTT'); 
+Exec dbms_stats.DELETE_TABLE_stats(ownname=>'SCOTT',tabname=>'EMP');
+Exec dbms_stats.DELETE_INDEX_stats(ownname => 'SCOTT',indname => 'PK_EMP');
+Exec dbms_stats.DELETE_COLUMN_stats(ownname =>'SCOTT',tabname=>'EMP',colname=>'EMPNO');
+
+******** Demantra Health Check ******************
+sqlplus demantra/********
+truncate DB_HEALTH_LOG
+EXEC RUN_HEALTH_CHECK ('ALL','COUNT,LIST');
+select * from DB_HEALTH_LOG
+
+-- To fix issues run
+EXEC RUN_HEALTH_CHECK ('ALL','COUNT,LIST,FIX'); 
+
+-- Examine DB_HEALTH_LOG for results
+select * from DB_HEALTH_LOG
+
+-- Examine DB_EXCEPTION_LOG for any errors. 
+select * from DB_EXCEPTION_LOG
+
+-- You can run LIST again to verify that the fixes are in place
+ie The system should not report any more missing functional indexes
+
+EXEC RUN_HEALTH_CHECK ('ALL','COUNT,LIST');
+
+exit;
+
+
+###### Demantra table check/reorg #####
+truncate table log_table_reorg
+
+exec TABLE_REORG.check_reorg('T') or ('Q') - Q means quick T means Thorough.
+
+SELECT ui.index_name,trunc((ut.num_rows/ui.clustering_factor)/(ut.num_rows/ut.blocks),2) FACTOR
+FROM user_indexes ui, user_tables ut, user_constraints uc
+WHERE ui.table_name=ut.table_name
+AND ut.table_name=uc.table_name
+AND ui.index_name=uc.index_name
+AND UC.CONSTRAINT_TYPE='P'
+AND ut.table_name=upper('&enter_table_name');
+
+set lines 200 pages 200
+SELECT ui.index_name,trunc((ut.num_rows/ui.clustering_factor)/(ut.num_rows/ut.blocks),2) FACTOR
+FROM user_indexes ui, user_tables ut, user_constraints uc
+WHERE ui.table_name=ut.table_name
+AND ut.table_name=uc.table_name
+AND ui.index_name=uc.index_name
+AND UC.CONSTRAINT_TYPE='P'
+AND ut.table_name in ('SALES_DATA','PROMOTION_MATRIX','PROMOTION_DATA','MDP_MATRIX');
+
+
+
+
+
+#### Check advice from TABLE_REORG.check_reorg
+set lines 360 pages 200
+col "Log Time" for a20
+col "Action" for a150
+SELECT
+   to_char(log_time,'DD-MON-YYYY HH24:MI:SS') "Log Time",
+   action_name||' '||msg_text "Action"
+FROM log_table_reorg
+ORDER BY log_time;
+
+03-FEB-2015 14:32:49       init thorough check started
+03-FEB-2015 14:32:51       generic_tests No statistics on table T_SRC_LOC_TMPL_TMP
+03-FEB-2015 14:32:51       generic_tests High recommendation: Gather statistics with estimate_percent greater than 30 on table T_SRC_LOC_TMPL_TMP
+03-FEB-2015 14:32:51       generic_tests No statistics on table T_SRC_ITEM_TMPL_TMP
+03-FEB-2015 14:32:51       generic_tests High recommendation: Gather statistics with estimate_percent greater than 30 on table T_SRC_ITEM_TMPL_TMP
+03-FEB-2015 14:32:51       generic_tests No statistics on table T_SRC_SALES_TMPL_TMP
+03-FEB-2015 14:32:51       generic_tests High recommendation: Gather statistics with estimate_percent greater than 30 on table T_SRC_SALES_TMPL_TMP
+03-FEB-2015 14:32:51       generic_tests No statistics on table E1_DEDUCT
+03-FEB-2015 14:32:51       generic_tests High recommendation: Gather statistics with estimate_percent greater than 30 on table E1_DEDUCT
+03-FEB-2015 14:32:51       generic_tests No statistics on table E1_PAYMENT
+03-FEB-2015 14:32:51       generic_tests High recommendation: Gather statistics with estimate_percent greater than 30 on table E1_PAYMENT
+03-FEB-2015 14:32:51       gather_statistics Gathering statistics
+03-FEB-2015 14:32:58       QCHECK Table BIIO_COSTGLOBAL_ERR has no primary key
+03-FEB-2015 14:32:58       QCHECK Recommendation: Table BIIO_COSTGLOBAL_ERR is missing primary key. If its a custom table, please create primary key. For application tables, please contact Oracle Support
+03-FEB-2015 14:32:58       restore_statistics Restoring statistics
+03-FEB-2015 14:32:58       gather_statistics Gathering statistics
+03-FEB-2015 14:33:18       QCHECK Table BIIO_COSTGLOBAL has no primary key
+03-FEB-2015 14:33:18       QCHECK Recommendation: Table BIIO_COSTGLOBAL is missing primary key. If its a custom table, please create primary key. For application tables, please contact Oracle Support
+03-FEB-2015 14:33:18       restore_statistics Restoring statistics
+03-FEB-2015 14:33:18       restore_statistics thorough check completed
+
+e.g GATHER STATS
+EXEC DBMS_STATS.GATHER_DATABASE_STATS(ESTIMATE_PERCENT=>DBMS_STATS.AUTO_SAMPLE_SIZE,degree => 4);
+exec DBMS_STATS.GATHER_TABLE_STATS (ownname => 'DEMANTRA',tabname => 'RUPD$_SALES_DATA',degree => 2,cascade => TRUE,METHOD_OPT => 'FOR COLUMNS SIZE AUTO',estimate_percent =>'50');
+exec DBMS_STATS.GATHER_SCHEMA_STATS (ownname =>'DEMANTRA',estimate_percent=>DBMS_STATS.AUTO_SAMPLE_SIZE,degree=>4,cascade=>TRUE,options=>'GATHER STALE');
+
+## Check for invalid materilized views in DB
+set lines 200 pages 200
+select * from dba_mviews where owner='DEMANTRA';
+
+Look for mview like RDF16113154$SALES_DATA this will need to be dropped
+drop materialized view DEMANTRA.RDF16113154$SALES_DATA;
+
+select * from dba_mview_logs where LOG_OWNER='DEMANTRA';
+drop materialized view log on DEMANTRA.SALES_DATA;
+
+cd /home/orap007/velos/table_reorg
+sqldba
+@grant_table_reorg.sql
+exit
+sqlplus demantra
+exec table_reorg.reorg('DEMANTRA','SALES_DATA','C',20,4);  C = Colomn level, R= Row level, 20=Percent Free, 4=DOP)
+
+exec TABLE_REORG.check_reorg('T');
+#Gather any stats in check_reorg recommends this.
+
+##### Ask demantra functional reps if data looks good. If data looks good then #####
+sqldba
+drop table DEMANTRA.RDF09121124$SALES_DATA;
+@revoke_table_reorg.sql
+exit
+
+########### Show used/unused indexes #######
+set pages 999;
+set heading off;
+spool run_monitor.sql
+
+select
+   'alter index '||owner||'.'||index_name||' monitoring usage;'
+from
+   dba_indexes
+where
+   owner not in ('SYS','SYSTEM','PERFSTAT')
+;
+
+spool off;
+
+@run_monitor
+
+SELECT table_name, index_name, monitoring, used FROM v$object_usage where used='NO';
+SELECT table_name, index_name, monitoring, used FROM v$object_usage where used='YES';
+
+########### Largest tables within a schmea by size #########
+set lines 200 pages 200
+col OWNER for a20
+col SEGMENT_NAME for a35
+col SEGMENT_TYPE for a12
+select  owner, segment_name, segment_type, mb
+from (select owner, segment_name, segment_type, bytes / 1024 / 1024 mb
+from    dba_segments
+where segment_type = 'TABLE'
+order by bytes desc)
+where rownum < 10 and owner='W003_ODI_REPO';
+
+######## DB space used/Free #######
+set lines 200 pages 200
+SELECT tablespace_name tablespace_name, ROUND(SUM(total_mb)-SUM(free_mb)) CUR_USE_MB, ROUND(SUM(total_mb)) CUR_SIZE_MB,
+ROUND((SUM(total_mb)-SUM(free_mb))/SUM(total_mb)*100) CUR_PCT_FULL, ROUND(SUM(max_mb) - (SUM(total_mb)-SUM(free_mb))) POSS_FREE_SPACE_MB,
+ROUND(SUM(max_mb)) POSS_MAX_SZ_MB, ROUND((SUM(total_mb)-SUM(free_mb))/SUM(max_mb)*100)  "USED% based_on_maxsize"
+FROM (
+  SELECT tablespace_name, SUM(bytes)/1024/1024 FREE_MB,
+  0 TOTAL_MB, 0 MAX_MB
+  FROM dba_free_space
+  GROUP BY tablespace_name
+  UNION
+  SELECT tablespace_name, 0 CURRENT_MB,
+  SUM(bytes)/1024/1024 TOTAL_MB,
+  SUM(DECODE(maxbytes,0,bytes, maxbytes))/1024/1024 MAX_MB
+  FROM dba_data_files
+  GROUP BY tablespace_name)
+GROUP BY tablespace_name
+/
+
+#### EBS Version #####
+select release_name from FND_PRODUCT_GROUPS;
+
+CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 0 DAYS;
+CONFIGURE ARCHIVELOG DELETION POLICY TO BACKED UP 0 TIMES TO DISK;
+delete archivelog until sequence=83779;
+
+#### AIX usage monitor ####
+topas_nmon
+
+############################
+
+adpatch patchtop=`pwd` logfile=u20893241.log driver=u20893241.drv workers=4 interactive=yes options=hotpatch 
+
+egrep -i "CRITICAL|Error" /u21/applpj1/apps/apps_st/appl/admin/PJ1/log/u18998116.log
+
+java oracle.apps.per.DataInstall apps apps_V123 thin sgblcy8002.wsatkins.com2:1523:APPDEV
+adpatch patchtop=`pwd` driver=$PER_TOP/patch/115/driver/hrglobal.drv logfile=HRGlobal_`date +%Y%m%d`.log workers=4 interactive=yes options=hotpatch 
+egrep "error|FAILED" 
+
+###### EBS url ###########
+select home_url from icx_parameters;
+
+##UMASK for AIX
+smit users
+
+## Linux CPU's 
+more /proc/cpuinfo
+
+## DB Explain Plan
+select SQL_ID, CHILD_NUMBER from v$sql where SQL_FULLTEXT like '%CREATE TABLE T_POPU_ROMOTION_MATRIX.PROMOTION_ID%';
+select * from table(dbms_xplan.display_cursor(('&sql_id'),&child,'+peeked_binds'));
+
+#Explain plan for last run query
+select * from table(dbms_xplan.display_cursor(null,null,'ALLSTATS LAST'));
+
+## Fragmentation prc% manual
+
+SELECT ui.index_name,trunc((ut.num_rows/ui.clustering_factor)/(ut.num_rows/ut.blocks),2)
+FROM user_indexes ui, user_tables ut, user_constraints uc
+WHERE ui.table_name=ut.table_name
+AND ut.table_name=uc.table_name
+AND ui.index_name=uc.index_name
+AND UC.CONSTRAINT_TYPE='P'
+AND ut.table_name=upper('&enter_table_name');
+
+###########################################################
+############### JVM/ Jrockit Tuning #######################
+
+##HotSpot JVM - Optimizing throughput
+
+MEASUREMENT_ARGS="-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
+export MEASUREMENT_ARGS
+ 
+e.g USER_MEM_ARGS="${MEASUREMENT_ARGS} -Xmx512m -Xms512m -Xmn256m -Xss128k -XX:PermSize=128m -XX:MaxPermSize=128m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -XX:+UseParallelOldGC -XX:+AggressiveOpts -XX:+UseBiasedLocking"
+    export USER_MEM_ARGS
+	
+	
+-Xms and -Xmx - configure the memory as large as possible, but no more than 75% of the total available memory (32 bit machines < 1850MB).
+-Xmn - configure memory for the young generation.
+-XX:PermSize and -XX:MaxPermSize - additional heap for loaded classes and compiled (native) code. When the permanent generation of the heap is too small, the JVM will do a full garbage collection of the entire heap before resizing the permanent generation.
+-Xss - configures the maximum thread stack, each thread in the JVM is associated with a stack.
+-XX:+UseParallelGC - selects the parallel garbage collector.
+-XX:ParallelGCThreads - configures the number of threads of the garbage collection process.
+-XX:+AggressiveOpts - turns on future optimisations.
+-XX:+UseBiasedLocking - enhances performance regarding thread synchronisation.
+
+##HotSpot JVM - Optimizing pausetimes
+MEASUREMENT_ARGS="-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
+export MEASUREMENT_ARGS
+ 
+e.g USER_MEM_ARGS="${MEASUREMENT_ARGS} -Xmx512m -Xms512m -Xmn256m -XX:SurvivorRatio=8 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=31 -XX:PermSize=128m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+CMSIncrementalPacing -XX:CMSIncrementalDutyCycleMin=0 -XX:CMSIncrementalDutyCycle=10 -XX:+AggressiveOpts"
+	export USER_MEM_ARGS
+	
+-XX:SurvivorRatio - configure the survivor spaces.
+-XX:TargetSurvivorRatio - configure the amount of survivor space which may be occupied.
+-XX:MaxTenuringThreshold - gives objects a longer period before they are promoted to the tenured generation.
+-XX:+UseConcMarkSweepGC - selects the concurrent garbage collector.
+-XX:+CMSIncrementalMode - Enables incremental mode. Note that the concurrent collector must also be enabled for this option to work.
+-XX:+CMSIncrementalPacing - Enables automatic pacing. The incremental mode duty cycle is automatically adjusted based on statistics collected while the JVM is running.
+-XX:CMSIncrementalDutyCycleMin - The percentage (0-100) which is the lower bound on the duty cycle when CMSIncrementalPacing is enabled.
+-XX:CMSIncrementalDutyCycle - The percentage (0-100) of time between minor collections that the concurrent collector is allowed to run. If CMSIncrementalPacing is enabled, then this is just the initial value.
+
+## JRockit JVM - Optimizing throughput
+
+MEASUREMENT_ARGS="-Xverbose:gc,gcpause,memdbg"
+export MEASUREMENT_ARGS
+ 
+#If using JRockit Mission Control add
+MEASUREMENT_ARGS="${MEASUREMENT_ARGS} -Djava.rmi.server.hostname=172.31.0.102 -Xmanagement:ssl=false,authenticate=false,port=7091,autodiscovery=true"
+ 
+USER_MEM_ARGS="${MEASUREMENT_ARGS} -Xms512m -Xmx512m -Xss128k -XXcompactRatio:20 -XXcompactSetLimit:100000 -XXtlaSize:min=2k,preferred=16k -XXlargeObjectLimit:1k -Xgcprio:throughput"
+export USER_MEM_ARGS
+
+## JRockit JVM - Optimizing pausetimes
+
+MEASUREMENT_ARGS="-Xverbose:gc,gcpause,memdbg"
+export MEASUREMENT_ARGS
+
+-XXcompactRatio:<percentage> - percentage of the heap that is compacted during each garbage collection. When the garbage collection time is too long it might be beneficial to reduce the compaction area to reduce the pause times. In some other cases, especially when we are allocating very large arrays, it may be necessary to increase the compaction area to reduce the fragmentation on the heap and thus make allocation faster. Note that JRockit employs dynamic compaction so we rarely have to use -XXcompactRatio.
+-XXcompactSetLimit:<references> - reference limit for objects to be compacted; no compaction occurs if the limit is exceeded. The JRockit JVM compacts a small part of the Java heap at each garbage collection. The references to the objects in the compacted area are stored in a compact-set. When running non-deterministic garbage collection, the number of references to the compaction area will affect the compaction pause. This option can be used to limit the size of the compact-set and thus limit the compaction pause somewhat.
+-XXtlaSize:min=<size>,preferred=<size> - controls the size of the thread local area (TLA). TLA is a piece of free memory exclusively used by the thread. Objects used by the thread can be put in its own TLA without synchronizing with other threads.
+-XXlargeObjectLimit:<size> - controls the object size which are put directly on the heap (and will not be allocated in TLAs).
+ 
+# When using JRockit Mission Control add
+MEASUREMENT_ARGS="${MEASUREMENT_ARGS} -Djava.rmi.server.hostname=172.31.0.102 -Xmanagement:ssl=false,authenticate=false,port=7091,autodiscovery=true"
+ 
+USER_MEM_ARGS="${MEASUREMENT_ARGS} -Xms512m -Xmx512m -Xns256m -XXkeepAreaRatio:25 -Xgcprio:pausetime -XpauseTarget:200ms"
+export USER_MEM_ARGS
+-Xns - memory for the young generation.
+-XXkeepAreaRatio - an optimal keep area is as small as possible, keeping a small promotion ratio.
+-XpauseTarget the pausetime mode uses a pause target to optimise the pauzes. For garbage collectors such as -Xgcprio:deterministic and -Xgcprio:pausetime it does not make sense to tune compaction, but to use the option -XpauseTarget instead to optimize pauses.
+
+###############################
+
+#### LDAP Test ####
+####corporatesystemsimaging.atkinsglobal.com:16000/OPSSValidation/
+
+## ATKINS SOA CHANGES LIST ##
+Applied BP 20423535 (new soa version 11.1.1.7.9)
+Changed SOA MEM_ARGS
+Upgraded to java 1.7.0_79
+Enables WL Production mode
+
+######### CALABRATE IO ORACLE DB/ AUTO DOP #######
+SET SERVEROUTPUT ON
+DECLARE
+  l_latency  PLS_INTEGER;
+  l_iops     PLS_INTEGER;
+  l_mbps     PLS_INTEGER;
+BEGIN
+   DBMS_RESOURCE_MANAGER.calibrate_io (num_physical_disks => 1, 
+                                       max_latency        => 100,
+                                       max_iops           => l_iops,
+                                       max_mbps           => l_mbps,
+                                       actual_latency     => l_latency);
+ 
+  DBMS_OUTPUT.put_line('Max IOPS = ' || l_iops);
+  DBMS_OUTPUT.put_line('Max MBPS = ' || l_mbps);
+  DBMS_OUTPUT.put_line('Latency  = ' || l_latency);
+END;
+/
+
+
+SET LINESIZE 100
+COLUMN start_time FORMAT A20
+COLUMN end_time FORMAT A20
+
+SELECT TO_CHAR(start_time, 'DD-MON-YYY HH24:MI:SS') AS start_time,
+       TO_CHAR(end_time, 'DD-MON-YYY HH24:MI:SS') AS end_time,
+       max_iops,
+       max_mbps,
+       max_pmbps,
+       latency,
+       num_physical_disks AS disks
+FROM   dba_rsrc_io_calibrate;
+
+# For Progress
+select * from V$IO_CALIBRATION_STATUS;
+
+http://www.pythian.com/blog/secrets-of-oracles-automatic-degree-of-parallelism/
+
+#####################################
+list backup;
+DELETE BACKUPSET 207,208,209,212,213,214,217,218,219,222;
+
+#### EBS SUPP fixes/logs ##########
+cdv
+cd logs
+vit_ebs_db_PRD3_SUPP_v06emzs100.20150618.log
+vit_ebs_apps_PRD3_SUPP_v06emzs111.20150618.log
+vit_ebs_apps_PRD3_SUPP_v06emzs123.20150618.log
+
+recover database using backup controlfile until cancel
+/orasupp/db/apps_st/recovery_area/arch/1_104401_773659129.arc
+
+as orasupp on db
+/export/ops/ebssupp/velos/bin/vit_ebs_db.ksh PRD3 SUPP 10
+
+as applsupp on cp
+/export/ops/ebssupp/velos/bin/vit_ebs_apps.ksh PRD3 SUPP
+
+as applsupp on web
+/export/ops/ebssupp/velos/bin/vit_ebs_apps.ksh PRD3 SUPP
+
+##########################
+## Golbal zone IO usage
+iostat -zxnMt 5 5
+iostat -zxnM 5 15 |grep 100
+
+grep c5t600144F0802DFC4D0000545CC70602F7d0 /etc/zones/v10emzs100.xml
+
+c3t60A980006466654C644A644A52375939d0
+
+### it_syslog_check_na_ukepn103
+or this particular server you run this from vit_l 7
+
+cdscripts
+ls -al j*
+alias sqlapps
+./jtffmctl.sh stop apps_fnd/*******
+
+cdcomn
+cd admin/log
+cd *
+ls -alg E*
+df -g .
+
+> filename.log
+e.g. > Events01.log
+
+cdscripts
+./jtffmctl.sh start apps_fnd/*********
+
+
+tkprof ebs_ora_8328.trc ebs_ora_8328_tkprof.out explain='apps/erasure' table=apps.plan_table sys=no waits=yes
+
+### EMSS EBS Clone ###
+cdv
+cd ../bin
+pwd /export/ops/ebssupp/velos/bin/
+./vit_snap_clone.ksh -r prd3 d004
+
+usage()
+{
+        print -R "Usage: ${cmd} [args] source-env new-env" >&2
+        print -R "    Args: -s snapshot (snapshot to clone - default: 1)" >&2
+        print -R "          -r          (refresh)" >&2
+        print -R "          -c          (clone from existing copy)" >&2
+        print -R "          -d          (clone data only - no RapidClone)" >&2
+        print -R "          -u          (unmounted - no host presentation)" >&2
+        print -R "          -p          (clone project - no EBS/RapidClone)" >&2
+        exit 1
+}
+
+cd ../logs
+ls -ltr
+tail -f clone-d004.log (Also indvidual logs for each tier)
+
+# rsync
+rsync -avz 10.2.0 oraprd@10.205.16.121:/oraprd/db/tech_st/
+
+## Change DB userpassword without knowing password (value$) ##
+select spare4 from user$ where name='BITBUCKET_APP_OWNER';
+WSATK
+select spare4 from user$ where name='WSATK';
+
+SPARE4
+--------------------------------------------------------------------------------
+S:2D058976AE8FAD8ECFCDB93835ACEE94C83EDE19169209155BB81FEE7DBB
+
+SQL> alter user amit identified by abc12;
+
+User altered.
+
+SQL> conn amit/abc12
+Connected.
+SQL> conn / as sysdba
+Connected.
+SQL> alter user amit identified by values 'S:2D058976AE8FAD8ECFCDB93835ACEE94C83EDE19169209155BB81FEE7DBB';
+
+## EBS release
+select release_name from FND_PRODUCT_GROUPS;
+
+SELECT 'GRANT ALL ON '||table_name||' TO VELOCITY;'
+FROM   ALL_TABLES
+WHERE  OWNER = 'HR';
+
+
+select 'alter user ' || username ||
+' identified by values ''' || password || ''';'
+from dba_users;
+
+## FNDCPASS SYSADMIN Password resrt
+FNDCPASS apps/apps 0 Y system/manager USER SYSADMIN <New Password>
+FNDCPASS apps/drizzle 0 Y system/dumbo USER SYSADMIN d3reh4m
+
+Example:
+
+FNDCPASS apps/apps 0 Y system/manager USER sysadmin/sysadmin123
+
+rsync -avz $ORACLE_HOME/apex oraprd3@172.21.128.100:/oraprd3/db/tech_st/11.2.0
+
+. ~/.profile; rsync -avz apex orau001@172.21.128.100:/orau001/db/tech_st/11.2.0 
+
+### Invalid Objects in DB ###
+
+COLUMN object_name FORMAT A30
+SELECT owner,
+       object_type,
+       object_name,
+       status
+FROM   dba_objects
+WHERE  status = 'INVALID'
+ORDER BY owner, object_type, object_name;
+
+####################################################
+## WorkFlow Mailer
+###################################################
+select count(*) from apps.wf_notifications 
+where mail_status = 'MAIL'; 
+
+select BEGIN_DATE, SUBJECT from apps.wf_notifications 
+where mail_status = 'MAIL' 
+order by begin_date;
+
+#### LAB IP #####
+ssh -l root 172.16.102.5
+
+## Change
+CHG0134071
+
+################################
+BEGIN
+   FOR R IN (SELECT owner, table_name FROM all_tables WHERE owner='TheOwner') LOOP
+      EXECUTE IMMEDIATE 'grant select on '||R.owner||'.'||R.table_name||' to TheUser';
+   END LOOP;
+END;
+
+####### Patch Applied ######
+col PATCH_NAME format a10
+col PATCH_TYPE format a10
+col DRIVER_FILE_NAME format a15
+col PLATFORM format a10
+select AP.PATCH_NAME, AP.PATCH_TYPE, AD.DRIVER_FILE_NAME, AD.CREATION_DATE,  AD.PLATFORM,AL.LANGUAGE
+from AD_APPLIED_PATCHES AP, AD_PATCH_DRIVERS AD, AD_PATCH_DRIVER_LANGS AL
+where AP.APPLIED_PATCH_ID = AD.APPLIED_PATCH_ID
+and AD.PATCH_DRIVER_ID = AL.PATCH_DRIVER_ID
+and AP.PATCH_NAME = '&patch_name';
+#############################################
+Feature Usage DB
+#############################################
+set lines 200 pages 200
+alter session set nls_date_format='dd/mon/yyyy hh24:mi:ss';
+select name, detected_usages, last_usage_date, last_sample_date 
+from dba_feature_usage_statistics 
+where name in ( 
+'ADDM', 'Automatic SQL Tuning Advisor', 'Automatic Workload Repository', 
+'AWR Baseline', 'AWR Baseline Template', 'AWR Report', 'EM Performance Page', 
+'Real-Time SQL Monitoring', 'SQL Access Advisor', 
+'SQL Monitoring and Tuning pages', 'SQL Performance Analyzer', 
+'SQL Tuning Advisor', 'SQL Tuning Set (system)', 'SQL Tuning Set (user)' 
+ ) order by DETECTED_USAGES;
+#############################################################################
+ 
+SET LINESIZE 180;
+SET PAGESIZE 1000;
+SET FEEDBACK OFF;
+SET COLSEP '|';
+WHENEVER SQLERROR EXIT SQL.SQLCODE;
+
+COL "Host Name" FORMAT A30;
+COL "Option/Management Pack" FORMAT A60;
+COL "Used" FORMAT A5;
+with features as(
+select a OPTIONS, b NAME  from
+(
+select 'Active Data Guard' a,  'Active Data Guard - Real-Time Query on Physical Standby' b from dual
+union all
+select 'Advanced Compression', 'HeapCompression' from dual
+union all
+select 'Advanced Compression', 'Backup BZIP2 Compression' from dual
+union all
+select 'Advanced Compression', 'Backup DEFAULT Compression' from dual
+union all
+select 'Advanced Compression', 'Backup HIGH Compression' from dual
+union all
+select 'Advanced Compression', 'Backup LOW Compression' from dual
+union all
+select 'Advanced Compression', 'Backup MEDIUM Compression' from dual
+union all
+select 'Advanced Compression', 'Backup ZLIB, Compression' from dual
+union all
+select 'Advanced Compression', 'SecureFile Compression (user)' from dual
+union all
+select 'Advanced Compression', 'SecureFile Deduplication (user)' from dual
+union all
+select 'Advanced Compression',        'Data Guard' from dual
+union all
+select 'Advanced Compression', 'Oracle Utility Datapump (Export)' from dual
+union all
+select 'Advanced Compression', 'Oracle Utility Datapump (Import)' from dual
+union all
+select 'Advanced Security',     'ASO native encryption and checksumming' from dual
+union all
+select 'Advanced Security', 'Transparent Data Encryption' from dual
+union all
+select 'Advanced Security', 'Encrypted Tablespaces' from dual
+union all
+select 'Advanced Security', 'Backup Encryption' from dual
+union all
+select 'Advanced Security', 'SecureFile Encryption (user)' from dual
+union all
+select 'Change Management Pack',        'Change Management Pack (GC)' from dual
+union all
+select 'Data Masking Pack',     'Data Masking Pack (GC)' from dual
+union all
+select 'Data Mining',   'Data Mining' from dual
+union all
+select 'Diagnostic Pack',       'Diagnostic Pack' from dual
+union all
+select 'Diagnostic Pack',       'ADDM' from dual
+union all
+select 'Diagnostic Pack',       'AWR Baseline' from dual
+union all
+select 'Diagnostic Pack',       'AWR Baseline Template' from dual
+union all
+select 'Diagnostic Pack',       'AWR Report' from dual
+union all
+select 'Diagnostic Pack',       'Baseline Adaptive Thresholds' from dual
+union all
+select 'Diagnostic Pack',       'Baseline Static Computations' from dual
+union all
+select 'Tuning  Pack',          'Tuning Pack' from dual
+union all
+select 'Tuning  Pack',          'Real-Time SQL Monitoring' from dual
+union all
+select 'Tuning  Pack',          'SQL Tuning Advisor' from dual
+union all
+select 'Tuning  Pack',          'SQL Access Advisor' from dual
+union all
+select 'Tuning  Pack',          'SQL Profile' from dual
+union all
+select 'Tuning  Pack',          'Automatic SQL Tuning Advisor' from dual
+union all
+select 'Database Vault',        'Oracle Database Vault' from dual
+union all
+select 'WebLogic Server Management Pack Enterprise Edition',    'EM AS Provisioning and Patch Automation (GC)' from dual
+union all
+select 'Configuration Management Pack for Oracle Database',     'EM Config Management Pack (GC)' from dual
+union all
+select 'Provisioning and Patch Automation Pack for Database',   'EM Database Provisioning and Patch Automation (GC)' from dual
+union all
+select 'Provisioning and Patch Automation Pack',        'EM Standalone Provisioning and Patch Automation Pack (GC)' from dual
+union all
+select 'Exadata',       'Exadata' from dual
+union all
+select 'Label Security',        'Label Security' from dual
+union all
+select 'OLAP',          'OLAP - Analytic Workspaces' from dual
+union all
+select 'Partitioning',          'Partitioning (user)' from dual
+union all
+select 'Real Application Clusters',     'Real Application Clusters (RAC)' from dual
+union all
+select 'Real Application Testing',      'Database Replay: Workload Capture' from dual
+union all
+select 'Real Application Testing',      'Database Replay: Workload Replay' from dual
+union all
+select 'Real Application Testing',      'SQL Performance Analyzer' from dual
+union all
+select 'Spatial'        ,'Spatial (Not used because this does not differential usage of spatial over locator, which is free)' from dual
+union all
+select 'Total Recall',  'Flashback Data Archive' from dual
+)
+)
+select t.o "Option/Management Pack",
+       t.u "Used",
+       d.DBID "DBID",
+       d.name "DB Name",
+       i.version "DB Version",
+       i.host_name "Host Name",
+       to_char(sysdate, 'YYYY-MM-DD HH24:MI:SS') "ReportGen Time"
+from
+(select OPTIONS o, DECODE(sum(num),0,'NO','YES') u
+from
+(
+select f.OPTIONS OPTIONS, case
+                   when f_stat.name is null then 0
+                   when ( ( f_stat.currently_used = 'TRUE' and
+                            f_stat.detected_usages > 0 and
+                            (sysdate - f_stat.last_usage_date) < 366 and
+                            f_stat.total_samples > 0
+                          )
+                          or
+                          (f_stat.detected_usages > 0 and
+                          (sysdate - f_stat.last_usage_date) < 366 and
+                          f_stat.total_samples > 0)
+                        ) and
+                        ( f_stat.name not in('Data Guard', 'Oracle Utility Datapump (Export)', 'Oracle Utility Datapump (Import)')
+                          or
+                          (f_stat.name in('Data Guard', 'Oracle Utility Datapump (Export)', 'Oracle Utility Datapump (Import)') and
+                           f_stat.feature_info is not null and trim(substr(to_char(feature_info), instr(to_char(feature_info), 'compression used: ',1,1) + 18, 2)) != '0')
+                        )
+                        then 1
+                   else 0
+                  end num
+  from features f,
+       sys.dba_feature_usage_statistics f_stat
+where f.name = f_stat.name(+)
+) group by options) t,
+  v$instance i,
+  v$database d
+order by 2 desc,1
+;
+
+
+SELECT client_name, status FROM dba_autotask_operation;
+SELECT * FROM dba_autotask_schedule;
+
+EXEC dbms_auto_task_admin.disable;
+EXEC dbms_auto_task_admin.enable;
+
+EXEC dbms_auto_task_admin.disable( 'sql tuning advisor', NULL, NULL );
+
+
+
+grep -rli "XGBD016904" * |grep -v *log*
+grep -rli "XGBD016904" * |xargs sed -i 's/XGBD016904/XGBEHZ6001/g'
+
+################################################## grep sed #################################
+find . -type f -exec sed -i 's/SGBLCY6153/XGBEHZ6001/gI' {} \;
+find . -type f -exec sed -i 's/SGBLCY6154/XGBEHZ6002/gI' {} \;
+find . -type f -exec sed -i 's/SGBLCY6156/XGBEHZ6002/gI' {} \;
+find . -type f -exec sed -i 's/SGBLCY6155/XGBEHZ6003/gI' {} \;
+find . -type f -exec sed -i 's/WSATKINS.COM/DC01-ATKINS-UK.LAN/gI' {} \;
+find . -type f -exec sed -i 's/ssfinvoiceprocessing.atkinsglobal.com/XGBEHZ6003.DC01-ATKINS-UK.LAN/gI' {} \;
+
+
+
+############# Tablespace size/free ###############
+col "Tablespace" for a22
+col "Used MB" for 99,999,999
+col "Free MB" for 99,999,999
+col "Total MB" for 99,999,999
+
+select df.tablespace_name "Tablespace",
+totalusedspace "Used MB",
+(df.totalspace - tu.totalusedspace) "Free MB",
+df.totalspace "Total MB",
+round(100 * ( (df.totalspace - tu.totalusedspace)/ df.totalspace))
+"Pct. Free"
+from
+(select tablespace_name,
+round(sum(bytes) / 1048576) TotalSpace
+from dba_data_files 
+group by tablespace_name) df,
+(select round(sum(bytes)/(1024*1024)) totalusedspace, tablespace_name
+from dba_segments 
+group by tablespace_name) tu
+where df.tablespace_name = tu.tablespace_name ;
+
+
+#############################################################
+nmConnect('svc_ipmad','drEcuy5c','XGBEHZ6003','5566','SOADomain','D:/oracle/middleware/user_projects/domains/SOADomain','plain')
+
+#### Start/Stop Work Flow Mailer WFMAILER ######
+Steps to start/stop notification mailer
+
+1. Check workflow mailer service current status
+  sqlplus apps/<apps password>
+  select running_processes
+    from apps.fnd_concurrent_queues
+   where concurrent_queue_name = 'WFMLRSVC';
+
+  Number of running processes should be greater than 0
+2. Find current mailer status
+  sqlplus apps/<apps password>
+  select component_status
+    from apps.fnd_svc_components
+   where component_id = 
+        (select component_id
+           from apps.fnd_svc_components
+          where component_name = 'Workflow Notification Mailer');
+
+  Possible values:
+  RUNNING
+  STARTING
+  STOPPED_ERROR
+  DEACTIVATED_USER
+  DEACTIVATED_SYSTEM
+2. Stop notification mailer
+  sqlplus apps/<apps password>
+  declare
+       p_retcode number;
+       p_errbuf varchar2(100);
+       m_mailerid fnd_svc_components.component_id%TYPE;
+  begin
+       -- Find mailer Id
+       -----------------
+       select component_id
+         into m_mailerid
+         from fnd_svc_components
+        where component_name = 'Workflow Notification Mailer';
+       --------------
+       -- Stop Mailer
+       --------------
+       fnd_svc_component.stop_component(m_mailerid, p_retcode, p_errbuf);
+       commit;
+  end;
+  /
+3. Start notification mailer
+  sqlplus apps/<apps password>
+  declare
+       p_retcode number;
+       p_errbuf varchar2(100);
+       m_mailerid fnd_svc_components.component_id%TYPE;
+  begin
+       -- Find mailer Id
+       -----------------
+       select component_id
+         into m_mailerid
+         from fnd_svc_components
+        where component_name = 'Workflow Notification Mailer';
+       --------------
+       -- Start Mailer
+       --------------
+       fnd_svc_component.start_component(m_mailerid, p_retcode, p_errbuf);
+       commit;
+  end;
+  /
+
+A workflow notification send event (notification email) can fail at several different points, so monitoring it using one method usually is not going to give you a complete picture.Additionally, you have to keep in mind that the process is dynamic, meaning that as transactions are created into the queues they are also mailed out; so a 
+count of data is at best only a snapshot of a particular moment in time.
+1. Here is a more robust script for monitoring the wf_notifications table:
+select message_type, mail_status, count(*) from wf_notifications
+where status = 'OPEN'
+GROUP BY MESSAGE_TYPE, MAIL_STATUS
+messages in 'FAILED' status can be resent using the concurrent request 'resend failed workflow notificaitons'
+messages which are OPEN but where mail_status is null have a missing email address for the recipient, but the notification preference is 'send me mail'
+2. Some messages like alerts don't get a record in wf_notifications table so you have to watch the WF_NOTIFICATION_OUT queue.
+
+select corr_id, retry_count, msg_state, count(*)
+from applsys.aq$wf_notification_out
+group by corr_id, msg_state, retry_count
+order by count(*) desc;
+Messages with a high retry count have been cycling through the queue and are not passed to smtp service.Messages which are 'expired' can be rebuilt using the wfntfqup.sql
+
+### Roles Assigned to user #####
+select * from dba_role_privs connect by prior granted_role = grantee start with grantee = '&USER' order by 1,2,3;
+select * from dba_sys_privs  where grantee = '&USER' or grantee in (select granted_role from dba_role_privs connect by prior granted_role = grantee start with grantee = '&USER') order by 1,2,3;
+select * from dba_tab_privs  where grantee = '&USER' or grantee in (select granted_role from dba_role_privs connect by prior granted_role = grantee start with grantee = '&USER') order by 1,2,3,4;
+
+select granted_role,admin_option,default_role from dba_role_privs where grantee='&user';
+
+## Clone DB User ###
+
+set lines 200 pages 200 long 9999
+select dbms_metadata.get_ddl('USER', 'CASS') FROM DUAL;
+SELECT DBMS_METADATA.GET_GRANTED_DDL('ROLE_GRANT','CASS') FROM DUAL;
+SELECT DBMS_METADATA.GET_GRANTED_DDL('SYSTEM_GRANT','CASS') FROM DUAL;
+SELECT DBMS_METADATA.GET_GRANTED_DDL('OBJECT_GRANT','CASS') FROM DUAL;
+SELECT DBMS_METADATA.GET_granted_DDL('TABLESPACE_QUOTA', 'CASS') FROM dual;
+
+
+#### Find instances & hosts in Oracle Grid #####
+1. SSH to any dbp host in abnamro.com domain
+2. sudo -l
+3. sudo -l |grep crsstat
+4. sudo -u oracle /ora/admin/bin/crsstat
+# TO show DB names
+5.  sudo -u oracle /ora/admin/bin/crsstat |grep -i POFR
+
+#############################################
+### Tuxedo ###
+## Tuexedo is the applciaiton front end for the old Coutts GMS system ##
+## Been readonly for about 10 years and is only used for refrence ###
+
+Possible contacts for help- Neil Bishop, Bill Spencer
+
+su - orapriv *** SLX Request ****  orapriv doesnt exist, SLX request for oracle password then su to tux user
+sudo su - tuxedo
+
+## Ensure tlisten process is running ##
+For prodtux1 run:
+tlisten -l//prodtux1:13832
+
+For prodtux2 run:
+tlisten -l//prodtux2:13832
+
+For prodtux3 run:
+tlisten -l//prodtux3:13832
+
+Tlisten takes about 10 secs to start. You'll see message 'T L I S T E N   A U T H E N T I C A T I O N   I S   D I S A B L E D !' appear then back to the command prompt. This is fine, it's not an error just a message that authentication is disabled.
+
+Confim process is running on all 3 servers:
+
+ps -ef|grep tlisten  - this will return tlisten -l//<hostname>:13832 where hostname is prodtux1, prodtux2 or prodtux3.  
+
+Then on PRODTUX1 only as tuxedo user:
+
+tmboot -y
+
+#Stop tuxedo clean
+tmshutdown -y -c
+
+##  Start stop tuxedo app servers ##
+prodtux1 is admin host
+
+d -m appsrv --allows managmet of specific appsvr
+d -m all -- allows managment of all appsrvrs
+
+psr - shows tux processes running on each machine, should be BBL & BRIDGE on each plus 10 cleard
+
+shutdown -l <appsrv name> -=- shutdown app srv from prodtux1 (admin host)
+If appsrv wont shutdown run..
+pcl appsrv3
+
+        Cleaning the DBBL.
+        Pausing 10 seconds waiting for system to stabilize.
+		
+then psr to make sure processes are cleaned
+
+## At this point you may need to breakglass on the specfic app server prodtux 2 or 3 to clear out memory segments using ipcs
+ipcs -a -- List memeory segments
+ipcrm -s  -- Clears Semaphores
+ipcrm -m --Clears Shared Memory
+ipcrm -q -- Clears message queues
+
+## Remmber to remove root entries. If list is long output to file and use awk & vi to make a script
+After segments clear start tlistener on app host
+
+on admin hosy (prodtux1) run
+boot -l appsrv3 -- Startes core tuedo servicses then run ..
+boot -B appsrv3 -- starts app services
+psr -- Check services running
+
+pclt - view users conneced (10 WSH per host)
+
+
+##############
+## 12c Tips ##
+##############
+
+#Show plugable databases
+sqlplus / as sysdba
+set lines 200 pages 200
+SELECT name, pdb FROM v$services ORDER BY name;
+
+#Show which database currently connected to
+SHOW CON_NAME
+
+# Swap database to plugable to container
+ALTER SESSION SET container = POGB0024
+
+#Start/Stop Plugable DB
+
+ALTER PLUGGABLE DATABASE POGB0024 OPEN ;
+ALTER PLUGGABLE DATABASE POGB0024 CLOSE IMMEDIATE;
+
+ALTER PLUGGABLE DATABASE ALL OPEN;
+ALTER PLUGGABLE DATABASE ALL CLOSE IMMEDIATE;
+
+# PGB status
+SELECT name, open_mode FROM v$pdbs;
+
+
+## Show max PGa used per process
+select max(pga_used_mem)/1024/1024 MAX_PGA_MB,max(pga_alloc_mem)/1024/1024 MAX_PGA_ALLOC_MB,  max(pga_max_mem)/1024/1024 PGA_MAX_MB from v$process
+
+
+/home/oracle > ipcs -ma
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status
+0x55002fd3 98304      root       644        256064     1                 locked
+0x0000000d 65537      root       666        138636     7
+0x0000cace 131074     root       666        2          0
+0x00000ca7 163843     root       666        45860      3
+0x00000000 1441797    oracle     660        268435456  178
+0x00000000 1474566    oracle     660        42681237504 178
+0xa1fe0830 1507335    oracle     660        2097152    178
+0xca0001ca 1540104    root       666        177764     1
+
+
+
+########### ASM notes #####################
+asmcmd mount if crs is not running rather than getting root access to start it, crs should start automatically if disks are mounted
+. oraenv
++ASM1
+sqlplus / as sysdba
+
+SQL> select GROUP_NUMBER,NAME,STATE from V$ASM_DISKGROUP;
+
+GROUP_NUMBER NAME                           STATE
+------------ ------------------------------ -----------
+           1 ORABACK                        MOUNTED
+           3 ORADATA                        MOUNTED
+           4 ORAFRA                         MOUNTED
+           0 ORADATA4                       DISMOUNTED
+           6 ORAFRA4                        MOUNTED
+           2 ORACRS                         MOUNTED
+
+
+asmcmd > mount <diskgroup_name>
+
+
+Thu Sep 01 10:12:21 2016
+GMON dismounting group 5 at 26 for pid 34, osid 28046
+ERROR: diskgroup ORADATA4 was not mounted
+ORA-15032: not all alterations performed
+ORA-15036: disk '/dev/oracleasm/disks/ORADISK187' is truncated
+ORA-15036: disk '/dev/oracleasm/disks/ORADISK186' is truncated
+ERROR: /* ASMCMD */ALTER DISKGROUP ORADATA4 MOUNT
+
+oragrid@mg1hrdb01a:/dev/oracleasm/disks $ ls -al ORADISK187
+brw-rw---- 1 oragrid asmadmin 253, 347 Aug 31 13:10 ORADISK187
+oragrid@mg1hrdb01a:/dev/oracleasm/disks $ ls -al ORADISK186
+brw-rw---- 1 oragrid asmadmin 253, 364 Aug 31 13:10 ORADISK186
+
+ls -al /opt/oracle/oracle_base/diag/asmtool --ensure oragrid user can write to dir
+kfed read '/dev/oracleasm/disks/ORADISK187' |grep kfdhdb.dsksize
+
+oragrid@mg1hrdb01a:/dev/oracleasm $ kfed read /dev/oracleasm/disks/ORADISK187 | egrep "dskname|dsksize"
+kfdhdb.dskname:           ORADATA4_0001 ; 0x028: length=13
+kfdhdb.dsksize:                   17263 ; 0x0c4: 0x0000436f
+oragrid@mg1hrdb01a:/dev/oracleasm $ kfed read /dev/oracleasm/disks/ORADISK186 | egrep "dskname|dsksize"
+kfdhdb.dskname:           ORADATA4_0000 ; 0x028: length=13
+kfdhdb.dsksize:                   17263 ; 0x0c4: 0x0000436f
+
+
+Shows both disks have a size of 17263MB
+
+
+brw-rw---- 1 oragrid asmadmin 253, 364 Aug 31 13:10 /dev/oracleasm/disks/ORADISK186
+oragrid@mg1hrdb01a:/dev/oracleasm $ ls -al /dev/oracleasm/disks/ORADISK187
+brw-rw---- 1 oragrid asmadmin 253, 347 Aug 31 13:10 /dev/oracleasm/disks/ORADISK187
+
+oragrid@mg1hrdb01a:/dev/oracleasm $ ls -l /dev/* | egrep "253, 364 |253, 347"
+brw-rw---- 1 root disk 253, 364 Aug 31 13:04 mpath237p1
+brw-rw---- 1 root disk 253, 347 Aug 31 13:04 mpath238p1
+
+lsdsk -k -G <DISKGORUP NAME>     INC0552217 
+
+
+
+###### Granted Privs/roles #######
+select
+lpad(' ', 2*level) || granted_role "User, his roles and privileges"
+from
+(
+/* THE USERS */
+select
+null     grantee,
+username granted_role
+from
+dba_users
+where
+username like upper('%&enter_username%')
+/* THE ROLES TO ROLES RELATIONS */
+union
+select
+grantee,
+granted_role
+from
+dba_role_privs
+/* THE ROLES TO PRIVILEGE RELATIONS */
+union
+select
+grantee,
+privilege
+from
+dba_sys_privs
+)
+start with grantee is null
+connect by grantee = prior granted_role;
+
+############## Oracle Wallets (orapki) ##################
+#Create Wallet
+orapki wallet create -wallet /opt/engage1/wallet -auto_login
+# Create password more that 8 chars
+
+#View wallet
+orapki wallet display -wallet /usr/WebSphere/AppServer/etc/keystores -pwd vjper34Hi
+orapki wallet display -wallet /ICARUS/user01/athadmin/oracle/secure_password_wallet/root 
+or
+orapki wallet display -wallet `pwd`   -- if in wallet dir --
+
+#Remove defualt certs
+orapki wallet remove -wallet `pwd` -trusted_cert_all -pwd C0mputer1!
+
+#Cert request
+orapki wallet add -wallet `pwd` -dn "CN=30485033" -keysize 2048 -pwd vjper34Hi
+
+
+#Export Cert Request
+orapki wallet export -wallet `pwd` -dn "CN=30485033" -request `pwd`/cwsprod_cert_req.txt
+orapki wallet export -wallet `pwd` -dn "CN=30486441" -request `pwd`/v05gsum01p_cert.req
+
+#import cert
+orapki wallet add -wallet `pwd` -user_cert -cert `pwd`/cwsp_mg.cer -pwd vjper34Hi
+
+#Remove requests (if need be)
+orapki wallet remove -wallet `pwd` -dn "CN=30401279,OU=Devices,OU=Production PKI Service,O=The Royal Bank of Scotland Group,C=gb" -cert_req -pwd XRG6SZg5iGoC
+
+orapki wallet remove -wallet `pwd` -dn "CN=gms-oracle-mul-rbs,OU=Devices,OU=Production PKI Service,O=The Royal Bank of Scotland Group,C=gb" -user_cert -pwd XRG6SZg5iGoC
+
+
+#View wallet
+orapki wallet display -wallet /opt/oracle/oracle_base/admin/network/secure_password_wallet_paz
+
+#Extract certificate from wallet
+orapki wallet export -wallet `pwd` -dn "FULL CERTIFICATE NAME" -cert SOME_FILE_NAME -pwd WALLET PASSWORD
+./orapki wallet export -wallet `pwd` -dn "CN=athenaOracleProd,OU=Services,OU=Internal,O=The Royal Bank of Scotland Group,C=gb" -cert athenaOracleProd.cert -pwd WALLET_PASSWORD
+orapki wallet export -wallet `pwd` -dn "CN=mghg01w01p.server.rbsgrp.net,OU=Devices,OU=Production PKI Service,O=The Royal Bank of Scotland Group,C=gb" -cert mghg01w01p.cert -pwd THE_WALLET_PASS
+
+#View Certificate
+orapki cert display -cert gms.cert  -summary
+orapki cert display -cert mghg01w01p.cert -summary
+#Add Trust Certs -- Root before CA --
+orapki wallet add -wallet /opt/oracle/oracle_base/admin/network/secure_password_wallet_090216 -trusted_cert -cert "/opt/oracle/oracle_base/admin/network/secure_password_wallet_090216/rbs_root_ca.cert" -pwd *******
+orapki wallet add -wallet /opt/oracle/oracle_base/admin/network/secure_password_wallet_090216 -trusted_cert -cert "/opt/oracle/oracle_base/admin/network/secure_password_wallet_090216/rbs_ca1.cert" -pwd C0mputer1!
+orapki wallet add -wallet `pwd` -trusted_cert -cert "`pwd`/ePKICA1.tru" -pwd vjper34Hi
+
+##### Export DB schema stats ###########
+begin
+  dbms_stats.CREATE_STAT_TABLE( ownname=>'OLY_PEG_MARKET_OWNER', stattab=>'OLY_PEG_MARKET_OWNER_STATS');
+end;
+/
+
+select count(*) from OLY_PEG_MARKET_OWNER.OLY_PEG_MARKET_OWNER_STATS;
+
+begin
+  dbms_stats.export_schema_stats( ownname=>'OLY_PEG_MARKET_OWNER', stattab=>'OLY_PEG_MARKET_OWNER_STATS', statid=>'CURRENT_STATS');
+end;
+/
+
+SQL> select count(*) from OLY_PEG_MARKET_OWNER.OLY_PEG_MARKET_OWNER_STATS;
+
+  COUNT(*)
+----------
+     19665
+
+PL/SQL procedure successfully completed.
+
+--Notice the table is populated.
+
+SQL> select count(*) from stats;
+
+  COUNT(*)
+
+----------
+
+       182
+	   
+CREATE OR REPLACE DIRECTORY dumpdir AS '/oradumps/POGBOLY3/datapump';
+GRANT READ, WRITE ON DIRECTORY dumpdir TO sys;	   
+expdp \'/ as sysdba\' directory=dumpdir dumpfile=OLY_PEG_MARKET_OWNER_STATS_021116.dmp logfile=OLY_PEG_MARKET_OWNER_STATS_021116.log tables=OLY_PEG_MARKET_OWNER.OLY_PEG_MARKET_OWNER_STATS
+
+####################### Explain Plans #####################
+explain plan for 
+select userinfo0_.USERID as col_0_0_ from USERINFO userinfo0_ where userinfo0_.ACTIVATED=:1;
+
+ @$ORACLE_HOME/rdbms/admin/utlxpls.sql
+ LAN_TABLE_OUTPUT
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Plan hash value: 3576123897
+
+------------------------------------------------------------------------------
+| Id  | Operation         | Name     | Rows  | Bytes | Cost (%CPU)| Time     |
+------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT  |          |  6900 | 75900 |    84   (2)| 00:00:02 |
+|*  1 |  TABLE ACCESS FULL| USERINFO |  6900 | 75900 |    84   (2)| 00:00:02 |
+------------------------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter("USERINFO0_"."ACTIVATED"=TO_NUMBER(:1))
+
+   
+-- Shared Pool 
+select * from table(dbms_xplan.display_cursor('7q60j5nvn41d1',null,'ALL')); 
+
+ 
+ 
+-- AWR 
+select * from TABLE(dbms_xplan.display_awr('9sk7yqh86zmbr'));
+select * from table(dbms_xplan.display_cursor('7q60j5nvn41d1',null,'ALL'));  
+select * from table(dbms_xplan.display_awr('9sk7yqh86zmbr',null,DBID,'ALL')); 
+
+### Purge individual plan from shared pool ####  
+SQL> select ADDRESS, HASH_VALUE from GV$SQLAREA where SQL_ID like '&SQL_ID';
+Enter value for sql_id: 3suh9vyfjfst4
+old   1: select ADDRESS, HASH_VALUE from GV$SQLAREA where SQL_ID like '&SQL_ID'
+new   1: select ADDRESS, HASH_VALUE from GV$SQLAREA where SQL_ID like '3suh9vyfjfst4'
+
+ADDRESS          HASH_VALUE
+---------------- ----------
+000000170FBFBFF0 2635555620
+
+SQL> exec DBMS_SHARED_POOL.PURGE ('&addr, &hashvalue', 'C');
+Enter value for addr: 000000170FBFBFF0
+Enter value for hashvalue: 2635555620
+
+PL/SQL procedure successfully completed.
+
+SQL>
+SQL> select ADDRESS, HASH_VALUE from GV$SQLAREA where SQL_ID like '&SQL_ID'; 
+
+
+SQL> select ADDRESS, HASH_VALUE from GV$SQLAREA where SQL_ID like '&SQL_ID';
+Enter value for sql_id: 3suh9vyfjfst4
+old   1: select ADDRESS, HASH_VALUE from GV$SQLAREA where SQL_ID like '&SQL_ID'
+new   1: select ADDRESS, HASH_VALUE from GV$SQLAREA where SQL_ID like '3suh9vyfjfst4'
+
+no rows selected
+
+### Pin plan to SQL (SQL baseline) ###
+--- Find best plan based on Avg from sql_id
+set lines 155
+col execs for 999,999,999
+col avg_etime for 999,999.999
+col avg_lio for 999,999,999.9
+col begin_interval_time for a30
+col node for 99999
+break on plan_hash_value on startup_time skip 1
+select ss.snap_id, ss.instance_number node, begin_interval_time, sql_id, plan_hash_value,
+nvl(executions_delta,0) execs,
+(elapsed_time_delta/decode(nvl(executions_delta,0),0,1,executions_delta))/1000000 avg_etime,
+(buffer_gets_delta/decode(nvl(buffer_gets_delta,0),0,1,executions_delta)) avg_lio
+from DBA_HIST_SQLSTAT S, DBA_HIST_SNAPSHOT SS
+where sql_id = nvl('&sql_id','bc04vhwv8wyjf')
+and ss.snap_id = S.snap_id
+and ss.instance_number = S.instance_number
+and executions_delta > 0
+order by 1, 2, 3
+/
+
+col begin_time for a25
+col end_time for a11
+col inst for 99999
+col snapid for 999999
+set lines 200
+set pages 20000
+select snap_id snapid,
+(select substr(BEGIN_INTERVAL_TIME,1,18)||' '||substr(BEGIN_INTERVAL_TIME,24,2) from dba_hist_snapshot b where b.snap_id=a.snap_id and
+a.INSTANCE_NUMBER=b.INSTANCE_NUMBER) begin_time
+,(select substr(end_INTERVAL_TIME,11,8)||' '||substr(end_INTERVAL_TIME,24,2) from dba_hist_snapshot b where b.snap_id=a.snap_id and
+a.INSTANCE_NUMBER=b.INSTANCE_NUMBER) end_time
+,INSTANCE_NUMBER inst , PLAN_HASH_VALUE,
+EXECUTIONS_DELTA Executions,
+ROWS_PROCESSED_DELTA rows1,
+round( CPU_TIME_DELTA /1000000,0) cpu_time,round(IOWAIT_DELTA /1000000,0) io_wait,
+round( ELAPSED_TIME_DELTA /1000000,0) elapsed
+from wrh$_sqlstat a where sql_id in('&SQL_ID')
+order by snap_id, INSTANCE_NUMBER;
+
+
+
+   SNAP_ID   NODE BEGIN_INTERVAL_TIME            SQL_ID        PLAN_HASH_VALUE        EXECS    AVG_ETIME        AVG_LIO
+---------- ------ ------------------------------ ------------- --------------- ------------ ------------ --------------
+      3576      1 28-OCT-16 12.28.04.581         3suh9vyfjfst4      2584727333            1      224.071    6,127,919.0
+      3842      1 08-NOV-16 13.28.28.098         3suh9vyfjfst4                            1      198.147    6,128,591.0
+      3866      1 09-NOV-16 13.28.09.367         3suh9vyfjfst4                            1      189.459    6,175,043.0
+
+
+
+-- Drop SQL Tuning Set (STS)
+BEGIN
+  DBMS_SQLTUNE.DROP_SQLSET(
+    sqlset_name => 'SQL_ID_<inc number>_date');
+END;
+ 
+-- Create SQL Tuning Set (STS)
+BEGIN
+  DBMS_SQLTUNE.CREATE_SQLSET(
+    sqlset_name => 'SQL_ID_<inc number>_date',
+    description => 'SQL Tuning Set for loading plan into SQL Plan Baseline');
+END;
+ 
+-- Populate STS from AWR, using a time duration when the desired plan was used
+--  List out snapshot times using :   SELECT SNAP_ID, BEGIN_INTERVAL_TIME, END_INTERVAL_TIME FROM dba_hist_snapshot ORDER BY END_INTERVAL_TIME DESC;
+--  Specify the sql_id in the basic_filter (other predicates are available, see documentation)
+DECLARE
+  cur sys_refcursor;
+BEGIN
+  OPEN cur FOR
+    SELECT VALUE(P)
+    FROM TABLE(
+       dbms_sqltune.select_workload_repository(begin_snap=>3576, end_snap=>3842,basic_filter=>'sql_id = ''3suh9vyfjfst4''',attribute_list=>'ALL')
+              ) p;
+     DBMS_SQLTUNE.LOAD_SQLSET( sqlset_name=> 'INC0961550', populate_cursor=>cur);
+  CLOSE cur;
+END;
+/
+ 
+-- List out SQL Tuning Set contents to check we got what we wanted
+SELECT
+  first_load_time          ,
+  executions as execs              ,
+  parsing_schema_name      ,
+  elapsed_time  / 1000000 as elapsed_time_secs  ,
+  cpu_time / 1000000 as cpu_time_secs           ,
+  buffer_gets              ,
+  disk_reads               ,
+  direct_writes            ,
+  rows_processed           ,
+  fetches                  ,
+  optimizer_cost           ,
+  sql_plan                ,
+  plan_hash_value          ,
+  sql_id                   ,
+  sql_text
+   FROM TABLE(DBMS_SQLTUNE.SELECT_SQLSET(sqlset_name => 'INC0961550')
+             );
+ 
+-- List out the Baselines to see what's there
+SELECT * FROM dba_sql_plan_baselines ;
+ 
+-- Load desired plan from STS as SQL Plan Baseline
+-- Filter explicitly for the plan_hash_value here if you want
+DECLARE
+my_plans pls_integer;
+BEGIN
+  my_plans := DBMS_SPM.LOAD_PLANS_FROM_SQLSET(
+    sqlset_name => 'INC0961550', 
+    basic_filter=>'plan_hash_value = ''2584727333'''
+    );
+END;
+/
+ 
+-- List out the Baselines
+SELECT * FROM dba_sql_plan_baselines ;
+
+### AWR script locations ####
+@$ORACLE_HOME/rdbms/admin/awrrpt.sql
+@$ORACLE_HOME/rdbms/admin/awrrpti.sql
+@$ORACLE_HOME/rdbms/admin/awrsqrpt.sql
+@$ORACLE_HOME/rdbms/admin/awrgrpt.sql 
+
+#ADDM
+@$ORACLE_HOME/rdbms/admin/addmrpt.sql
+
+#ASH
+@$ORACLE_HOME/rdbms/admin/ashrpt.sql
+
+#### SQL Run Time ####
+
+
+set pagesize 100
+col sql_fulltext form a30
+col program form a29
+col module form a25
+col time form 999
+col sid form 9999
+set linesize 300
+set trimspool on
+select sid,program,a.module,sql_fulltext,
+(case
+     when trunc(elapsed_time/1000000)<60 then to_char(trunc(elapsed_time/1000000))||' Sec(s)'
+     when trunc(elapsed_time/1000000/60)<60 then to_char(trunc(elapsed_time/1000000/60))||' Min(s)'
+     when trunc(elapsed_time/1000000/60/60)<24 then to_char(trunc(elapsed_time/1000000/60/60))||' Hour(s)'
+     when trunc(elapsed_time/1000000/60/60/24)>=1  then to_char(trunc(elapsed_time/1000000/60/60/24))||' Day(s)'
+ end) as time
+from v$session a,v$sqlarea b
+where a.sql_address=b.address
+and a.sql_hash_value=b.hash_value
+and users_executing>0
+and elapsed_time/1000000>30;
+
+### Puppet ####
+puppet apply /etc/puppet/modules/oradb/tests/oradb.pp --logdest /var/log/puppetlog
+
+### SQL Tunning Task from AWR ###
+
+DECLARE
+  l_sql_tune_task_id  VARCHAR2(100);
+BEGIN
+  l_sql_tune_task_id := DBMS_SQLTUNE.create_tuning_task (
+                          begin_snap  => 16010,
+                          end_snap    => 16011,
+                          sql_id      => '0c10cv2q6qa8h',
+                          scope       => DBMS_SQLTUNE.scope_comprehensive,
+                          time_limit  => 60,
+                          task_name   => '0c10cv2q6qa8h_AWR_tuning_task',
+                          description => 'Tuning task for statement 0c10cv2q6qa8h in AWR.');
+  DBMS_OUTPUT.put_line('l_sql_tune_task_id: ' || l_sql_tune_task_id);
+END;
+/
+
+#Run tunning task
+EXEC DBMS_SQLTUNE.execute_tuning_task(task_name => '072j20zyp8ywk_AWR_tuning_task');
+
+# Show task status
+SELECT task_name, status FROM dba_advisor_log where task_name like '072j20zyp8ywk_AWR_tuning_task%';
+
+
+#View recomendations
+SET LONG 10000;
+SET PAGESIZE 1000
+SET LINESIZE 200
+SELECT DBMS_SQLTUNE.report_tuning_task('072j20zyp8ywk_AWR_tuning_task') AS recommendations FROM dual;
+SET PAGESIZE 24
+
+
+#Drop tuning task
+BEGIN
+  DBMS_SQLTUNE.drop_tuning_task (task_name => '4cq7bd02h6wcb');
+END;
+/
+
+######################
+Tracing on listner logs
+#######################
+## Oracle Client Tracing   -- To help Application teams
+AM team will need to update sqlnet.ora this may require a sudo rule or sudoedit rule as sqlnet.ora is oftern owned by Oracle user.
+
+trace_level_client=support
+trace_file_client=cli
+trace_directory_client=/tmp/ora_logs
+diag_adr_enabled=off
+
+** Optional additional parameters **
+TRACE_FILENO_CLIENT=6 -- number fo files written
+TRACE_FILELEN_CLIENT=51200 -- size of files e.g 50MB
+TRACE_UNIQUE_CLIENT=ON -- unique file per connection?
+
+
+
+## Oracle listener Tracing
+Oracle DBA update listener.ora wil the below settings. Note TRACE_DIRECTORY_LISTENER_SCAN1 location should already exists. Please be 
+aware Oracle will preform trace on all database connections so prepare for a high level of detailed logs to look though.
+
+TRACE_LEVEL_LISTENER_SCAN1=16
+TRACE_DIRECTORY_LISTENER_SCAN1=/oraback/CWSN/trace/scan1
+DIAG_ADR_ENABLED_LISTENER_SCAN1=OFF
+
+** Optional additional parameters **
+TRACE_FILENO_CLIENT=6 -- number fo files written
+TRACE_FILELEN_CLIENT=51200 -- size of files e.g 50MB
+
+lsnrctl reload LISTENER_SCAN1
+
+Perform the steps above on each listener you wish to enable a high level of tracing on e,g SCAN2, SCAN3 & local listener.
+
+### Logon attempts
+
+select NTIMESTAMP#,SESSIONID,STATEMENT,USERID,USERHOST,ACTION#,RETURNCODE from sys.aud$ where userid like '&user_id' order by NTIMESTAMP#;
+sys.aud_archive
+
+select NTIMESTAMP#,SESSIONID,STATEMENT,USERID,USERHOST,ACTION#,RETURNCODE from sys.aud_archive where userid like '&user_id' order by NTIMESTAMP#;
+
+col ntimestamp# for a30 heading "Timestamp";
+col userid for a20 heading "Username";
+col userhost for a15 heading "Machine";
+col spare1 for a15 heading "OS User";
+col comment$text for a110 heading "Details" wrap;
+select ntimestamp#, userid, userhost, spare1, comment$text from sys.aud_archive where userid='CLARKL' order by 1;
+
+#### SQL Tuning TASK #####
+#Create Tuning Task based on AWR
+DECLARE
+  l_sql_tune_task_id  VARCHAR2(100);
+BEGIN
+  l_sql_tune_task_id := DBMS_SQLTUNE.create_tuning_task (
+                          begin_snap  => 16119,
+                          end_snap    => 16122,
+                          sql_id      => '318a8m63m0cdy',
+                          scope       => DBMS_SQLTUNE.scope_comprehensive,
+                          time_limit  => 60,
+                          task_name   => '318a8m63m0cdy',
+                          description => 'Tuning task for statement 318a8m63m0cdy in AWR.');
+  DBMS_OUTPUT.put_line('l_sql_tune_task_id: ' || l_sql_tune_task_id);
+END;
+/
+
+#Run tuning task
+EXEC DBMS_SQLTUNE.execute_tuning_task(task_name => '318a8m63m0cdy');
+
+-- Interrupt and resume a tuning task.
+EXEC DBMS_SQLTUNE.interrupt_tuning_task (task_name => '318a8m63m0cdy');
+EXEC DBMS_SQLTUNE.resume_tuning_task (task_name => '318a8m63m0cdy');
+
+-- Cancel a tuning task.
+EXEC DBMS_SQLTUNE.cancel_tuning_task (task_name => '318a8m63m0cdy');
+
+-- Reset a tuning task allowing it to be re-executed.
+EXEC DBMS_SQLTUNE.reset_tuning_task (task_name => '318a8m63m0cdy');
+
+#View tuning task status
+SELECT task_name, status FROM dba_advisor_log WHERE owner = 'SYS';
+
+# View tuning task results
+SET LONG 10000;
+SET PAGESIZE 1000
+SET LINESIZE 200
+SELECT DBMS_SQLTUNE.report_tuning_task('318a8m63m0cdy') AS recommendations FROM dual;
+SET PAGESIZE 24
+
+# Drop SQL tuning task_name
+BEGIN  
+  DBMS_SQLTUNE.drop_tuning_task (task_name => '318a8m63m0cdy');
+END;
+
+#################################
+## read/write time of 1GB file with dd
+time sh -c "dd if=/dev/zero of=dd_io_test bs=8k count=131072 && sync"
+time sh -c "dd if=dd_io_test of=/dev/null bs=8k"
+
+## Stat gather runtime
+select * from DBA_OPTSTAT_OPERATIONS;
+
+#### RBS OEM
+[‎4/‎6/‎2017 8:46 AM] Kumar, Ashok (IT Operations, Technology India): 
+http://moss.web.rbsgrp.net/sites/1000/SiteDirectory/OracleProdSvcs/Home/GIS%20OEM%20(CIB%20and%20TS%20Estates).aspx 
+
+http://lonrs03146.fm.rbsgrp.net:4889/em 
+
+if not working with thi server then just change the server name and put any one of these 4
+lonrs03146, lonrs03926, lonrs09102 &  lonrs09018 
+userid=sysman and password is pr3par3
+
+## DB growth over 1 year ##
+set pagesize 50000
+tti "Database growth per month for last year"
+
+select to_char(creation_time, 'RRRR Month') "Month",
+sum(bytes)/1024/1024/1024 "Growth in GB"
+from v$datafile
+where creation_time > SYSDATE-365
+group by to_char(creation_time, 'RRRR Month');
+order by 1,2
+
+
+select
+to_char(CREATION_TIME,'RRRR') year, 
+to_char(CREATION_TIME,'MM') month, 
+sum(bytes)/1024/1024/1024 GB 
+from v$datafile 
+group by 
+to_char(CREATION_TIME,'RRRR'), 
+to_char(CREATION_TIME,'MM') 
+order by 1, 2;
+
+#####################GET METADATA #####################
+
+##Trigger
+select dbms_metadata.get_ddl('TRIGGER','USER_TRIGGER') from dual;
+
+
+select username,machine,logon_time from v$session order by username
+select username,machine,logon_time from v$session order by logon_time
+
+#### SCP on HSPA
+SCP files to Global shell
+cd /opsw/Server/@/mg5cwsr01a/
+
+## SPID to SID
+col sid format 999999
+col username format a20
+col osuser format a15
+select b.spid,a.sid, a.serial#,a.username, a.osuser
+from v$session a, v$process b
+where a.paddr= b.addr
+and b.spid='&spid'
+order by b.spid;
+
+

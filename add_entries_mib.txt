@@ -1,0 +1,33 @@
+Need an expedited CR (like CR285941) – approved by EMEA ISC DBA ORACLE
+Add an LDAP entry for non-RAC database POLNAUT3 (port 1800) on lonrs08819.
+Add an LDAP entry (to old (lonrs00268) and new (lonrs03145) LDAP) for database POLNAUT3, port 1800 on lonrs08819.
+
+
+#### lonrs00268 old LDAP lonrs03145 new LDAP ####
+
+And then as dba_cybk:
+
+lonrs00268:dba_cybk:CCSP1
+/var/opt/oracle/ldap/admin > 
+ 
+./rbs_ldapsearch.pl -s POLNSRE1
+ 
+./rbs_ldapdelete.pl -d POLNSRE1
+ 
+ 
+./rbs_ldapadd.pl -d POLNSRE1 -h lonuc18228.fm.rbsgrp.net -p 1660
+ 
+There is an issue that you get the Unix ldap utility instead of the Oracle one
+export ORACLE_HOME=/opt/oracle/product/10.2.0.4
+export PATH=$ORACLE_HOME/bin:$PATH
+ 
+log onto lonrs03145
+ 
+> cd /export/home/oracle/scripts
+ 
+> ./rbs_ldapsearch.ksh -d <db_name or instance_name or service_name>
+ 
+> ./rbs_ldapdelete.ksh
+ 
+> ./rbs_ldapadd.ksh
+

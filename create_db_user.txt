@@ -1,0 +1,58 @@
+$ sqlplus / as sysdba
+
+SQL*Plus: Release 11.2.0.3.0 Production on Tue Sep 25 16:54:40 2012
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> create user emss_ro1dev identified by Velos123;
+
+User created.
+
+SQL> grant create session, alter session, select any table to emss_ro1uat;
+
+Grant succeeded.
+
+SQL> conn emss_ro1uat/Velos123
+Connected.
+SQL>
+SQL> select count(*) from v$datafile;
+select count(*) from v$datafile
+                     *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> select count(*) from dba_objects;
+select count(*) from dba_objects
+                     * 
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> /
+select count(*) from dba_objects
+                     *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+grant select any dictionary to ;
+grant select_catalog_role to ;
+
+
+SQL> /
+
+  COUNT(*)
+----------
+     82754
+
+SQL> select count(*) from v$datafile;
+
+  COUNT(*)
+----------
+        40

@@ -1,0 +1,7 @@
+***** The following Script will start BI services******
+
+
+ompnctl startall
+
+
+opmnctl startproc ias-component=coreapplication_obips1

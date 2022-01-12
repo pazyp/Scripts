@@ -1,0 +1,33 @@
+WEBLOGIC STUCK THREAD TRACKING
+
+If you have a stuck thread find java process chausing stuck thread
+
+top
+ps -ef |grep java
+top -H -p <pid>		Shows all threads for particular pid sorted by CPU usage
+
+Copy top CPU usage pid
+
+Convert pid to hex value
+
+printf "%x \n" <pid>
+
+Copy hex value of thread pid
+
+. ./serDomainEnv.sh
+
+run jcmd
+
+jcmd <pid of weblogic> help
+
+Take thread dump
+
+jcmd <pid of weblogic> Thread.print > ThreadDump.txt
+
+vi ThreadDump.txt
+
+Search for Hex value created this shows code and line in java code causeing long running thread
+
+View java source code to verify stuck thread using Netbeans IDE
+
+https://www.youtube.com/watch?v=NLRdNP5VIQo

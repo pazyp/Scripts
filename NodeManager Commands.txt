@@ -1,0 +1,23 @@
+nmConnect('weblogic','Velos389','172.19.129.140','5556','emss_bifoundation_domain','/obiaprd1/apps/obiee/MWHome/admin/domains/emss_bifoundation_domain','SSL')
+
+nmServerStatus('AdminServer')
+
+nmStart(‘AdminServer’)
+
+nmKill(‘AdminServer’)
+
+nmEnroll("/obiaprd1/apps/obiee/MWHome/wlserver_10.3/common/nodemanager")
+
+connect('weblogic','3MSS123W','t3://172.19.129.140:7002')
+
+
+$ ps -ef |grep java |grep -v grep
+noaccess 23207 14458   0 12:00:17 ?           0:46 /usr/java/bin/java -server -Xmx128m -XX:+UseParallelGC -XX:ParallelGCThreads=4
+------> obiaprd1 23858 23839   0 12:09:26 pts/3       0:16 /obiaprd1/apps/obiee/MWHome/jrockit-jdk1.6.0_37-R28.2.5-4.1.0/bin/sparcv9/java
+obiaprd1 15672 15648   0 10:09:51 pts/2      37:30 /obiaprd1/apps/obiee/MWHome/jrockit-jdk1.6.0_37-R28.2.5-4.1.0/bin/sparcv9/java
+$
+
+
+nmConnect('weblogic','EM55UATw3bl0gic','172.21.129.130','9556','bifoundation_domain','/obiauat1/apps/obiee/MWHome/user_projects/domains/bifoundation_domain','SSL')
+
+

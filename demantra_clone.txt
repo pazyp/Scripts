@@ -1,0 +1,74 @@
+####################################
+########## CLONE DEMANTRA ##########
+####################################
+
+################# On Soruce DB #################
+CONN / AS SYSDBA
+ALTER USER scott IDENTIFIED BY tiger ACCOUNT UNLOCK;
+
+CREATE OR REPLACE DIRECTORY dem_exports AS '/home/oras004/exports';
+GRANT READ, WRITE ON DIRECTORY dem_exports TO system;
+
+expdp system/Velos123 schemas=demantra directory=dem_exports dumpfile=dems006.dmp logfile=expdpdems006.log
+
+sqlplus demantra/Velos123
+select count(*) from sales_data;
+
+--Move dump file to destination
+
+#################### On Target DB ################
+-- drop dummy demantra schema
+drop user demantra cascade
+
+impdp system/manager directory=dem_exports dumpfile=dems006.dmp TABLE_EXISTS_ACTION=REPLACE logfile=impdpdems006.log 
+
+Change the following to point from old to new enviroment
+
+sqlplus demantra/Velos123
+
+select count(*) from sales_data; --ensure value mataches with source schema.
+
+select * from VERSION_DETAILS;
+
+SQL> UPDATE SYS_PARAMS SET pval = '1' WHERE lower(pname) = 'engineplatform';
+
+SQL> UPDATE SYS_PARAMS SET pval = 'http://10.10.160.33:8083/engineManager' WHERE lower(pname) = 'enginebaseurl';
+
+select pname, value_string from aps_params where pname like'server.generalurl';
+update aps_params set VALUE_STRING='http://10.10.160.33:8080/demantra' where PNAME='server.generalurl';
+
+select pname, pval from sys_params where pname  in ('AppServerURL');  
+update sys_params set PVAL='http://10.10.160.33:8080/demantra' where PNAME='AppServerURL';
+
+select pname, value_string from aps_params where pname in('ServerName', 'TNSName', 'DBName', 'DBPort');
+update aps_params set VALUE_STRING='S004' where PNAME='TNSName';
+
+select encrypt_string('Velos123') from dual; -- to compare with
+--- Values should match
+select value_string, pname from aps_params where pname='database.password';
+-- if not run
+update aps_params set value_string = encrypt_string('your database password') where pname='database.password'; commit;
+then enter again in encryption.exe your db password and check ds.ini for an updated identical password
+
+select USER_ID,USER_NAME,PASSWORD from user_id where user_name='dm';
+
+- Change the user password when needed from web server link Admin, or from Business Modeler, restart webserver, login with new password;
+-- If any problems dbas could: 
+-- UPDATE user_id SET  password = ENCRYPTION.encrypt_string('dm'), encryption_type='DEMANTRA' WHERE  user_name = 'dm'; 
+-- EXEC UPDATE_PASSWORDS; commit; -- this should revert to sha-1 encryption;
+-- Sometimes needed when you clone, install.. or have date limit / expiration, or changing security options without finishing.. This could also happen if the DBA revokes privileges for executing the DBMS_CRYPTO package, or if the USER_ID table is somehow corrupted.
+
+--Run below as SYSDBA
+GRANT EXECUTE ON DBMS_CRYPTO TO demantra;
+GRANT EXECUTE ON DBMS_OBFUSCATION_TOOLKIT TO demantra;
+GRANT EXECUTE ON DBMS_LOCK TO demantra;
+GRANT SELECT ON V_$PARAMETER TO demantra;
+GRANT EXECUTE ON UTL_HTTP TO demantra;
+
+
+Restart demantra web tiers.
+--Check you can login to demantra web tier
+http://10.10.160.33:8080/demantra/portal/loginpage.jsp
+user - dm Pass- dm
+
+

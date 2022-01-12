@@ -1,0 +1,27 @@
+Open the Omnitracker ticket and check that a MD120 is attached.
+Open the MD120
+Login to v10emzs110 as applu001
+    vit_l U001 CP
+Create the velos code repository
+    cdtickets
+    mkdir <Omnitracker ticket number>        e.g. mkdir Nr-12021234
+    cd <Omnitracker ticket number>            e.g. cd Nr-12021234
+    T=`pwd`
+Change to the EMSS code repository
+    cdcode
+Check that the code for the change exists
+    ls -ald <code name>
+Copy the code from the EMSS code repository to the velos code repository
+    ( tar -cf - 12708_SPIKE_CAVELL_EXTRACT) | ( cd $T;  tar -xf - )
+Install the change
+        cd $T
+    Read the MD120 for instructions
+    identify locate the required passwords   e.g apps (sqlapps ) xxlcc ( custom_u001)
+    ./<shell script>
+
+Update and Close the Omnitracker ticket with the MD120 checks and log details.
+
+apps/Tuesday20120207
+
+
+custom_u001

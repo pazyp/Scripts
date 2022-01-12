@@ -1,0 +1,32 @@
+mv  ${DOMAIN_HOME}/servers/AdminServer/logs/AdminServer.log  ${DOMAIN_HOME}/servers/AdminServer/logs/AdminServer_`date +%d%m%Y`.log
+touch ${DOMAIN_HOME}/servers/AdminServer/logs/AdminServer.log
+nohup ${DOMAIN_HOME}/bin/startWebLogic.sh &
+tail -f ${DOMAIN_HOME}/servers/AdminServer/logs/AdminServer.log &
+
+var1=0
+while [ $var1 -eq 0 ]
+do
+sleep 15
+var1=`cat ${DOMAIN_HOME}/servers/AdminServer/logs/AdminServer.log | grep "<Server started in RUNNING mode>" | wc -l`
+done
+
+
+nohup ${WEBLOGIC_HOME}/server/bin/startNodeManager.sh &
+sleep 15
+
+
+mv ${DOMAIN_HOME}/servers/bi_server1/logs/bi_server1.log ${DOMAIN_HOME}/servers/bi_server1/logs/bi_server1.log_`date +%d%m%Y`.log
+touch ${DOMAIN_HOME}/servers/bi_server1/logs/bi_server1.log
+nohup ${DOMAIN_HOME}/bin/startManagedWebLogic.sh bi_server1 &
+tail -f ${DOMAIN_HOME}/servers/bi_server1/logs/bi_server1.log &
+
+var2=0
+while [ $var2 -eq 0 ]
+do
+sleep 15
+var2=`cat ${DOMAIN_HOME}/servers/bi_server1/logs/bi_server1.log | grep "<Server started in RUNNING mode>" | wc -l`
+done
+
+${INST_HOME}/bin/opmnctl startall
+
+echo "ALL SERVICES STARTED"

@@ -1,0 +1,19 @@
+**** The following steps show how to configure Oracle Enterprise manager****
+
+
+----Pre-requisite Steps----
+
+export ORACLE_HOME=
+export ORACLE_SID=
+export ORACLE_BASE=
+export ORACLE_DBUNIQUENAME=
+
+emca -deconfig dbcontrol db -repos drop - if already exists
+
+emca -config dbcontrol db -repos create
+
+emca -reconfig ports -DBCONTROL_HTTP_PORT enterportno
+
+emctl unsecure dbconsole
+
+emctl start dbconsole

@@ -1,0 +1,20 @@
+#!/bin/ksh
+#
+# _`date +'%Y%m%d_%H%M%S'`
+#
+log_to_rotate="alert_PRD3.log"
+#
+date_of_rotate="`date +'%Y%m%d_%H%M%S'`"
+#
+if test -f ${log_to_rotate}
+then
+  print "About to rotate log file for ${log_to_rotate}"
+  ls -al ${log_to_rotate}
+  cp ${log_to_rotate} ${log_to_rotate}_${date_of_rotate}
+  > ${log_to_rotate}
+  print ""
+  ls -la ${log_to_rotate} ${log_to_rotate}_${date_of_rotate}
+else
+  print "$0 : no log file called ${log_to_rotate} found"
+exit 1
+fi

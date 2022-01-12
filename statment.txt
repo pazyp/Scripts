@@ -1,0 +1,42 @@
+select distinct 0 as c1,      D1.c7 as c2,      D1.c1 as c3,      D1.c2
+as c4,      D1.c3 as c5,      D1.c4 as c6,      D1.c5 as c7,      D1.c6
+as c8,      0 as c9,      0 as c10,      0 as c11,      0 as c12,
+0 as c13,      0 as c14,      cast(NULL as  DOUBLE PRECISION  ) as c15
+from       (select count(distinct case  when abs(( TRUNC(
+T313410.DAY_DT ) - TRUNC( T66755.DAY_DT ) )) between 1 and 7 then
+concat(T355976.PURCH_INVOICE_NUM, cast(T158070.ROW_WID as  VARCHAR ( 30
+) )) else NULL end ) as c1,                count(distinct case  when
+abs(( TRUNC( T313410.DAY_DT ) - TRUNC( T66755.DAY_DT ) )) between 15
+and 21 then concat(T355976.PURCH_INVOICE_NUM, cast(T158070.ROW_WID as
+VARCHAR ( 30 ) )) else NULL end ) as c2,                count(distinct
+case  when abs(( TRUNC( T313410.DAY_DT ) - TRUNC( T66755.DAY_DT ) ))
+between 8 and 14 then concat(T355976.PURCH_INVOICE_NUM,
+cast(T158070.ROW_WID as  VARCHAR ( 30 ) )) else NULL end ) as c3,
+         count(distinct case  when abs(( TRUNC( T313410.DAY_DT ) -
+TRUNC( T66755.DAY_DT ) )) = 0 then concat(T355976.PURCH_INVOICE_NUM,
+cast(T158070.ROW_WID as  VARCHAR ( 30 ) )) else NULL end ) as c4,
+         count(distinct case  when abs(( TRUNC( T313410.DAY_DT ) -
+TRUNC( T66755.DAY_DT ) )) >= 22 then concat(T355976.PURCH_INVOICE_NUM,
+cast(T158070.ROW_WID as  VARCHAR ( 30 ) )) else NULL end ) as c5,
+         count(distinct concat(T355976.PURCH_INVOICE_NUM,
+cast(T158070.ROW_WID as  VARCHAR ( 30 ) ))) as c6,
+T149255.X_SEGMENT_NAME as c7           from                 W_DAY_D
+T313410 /* Dim_W_DAY_D_Invoice_Approval Date */ ,
+W_STATUS_D T159345 /* Dim_W_STATUS_D_AP_Invoice_Approval_Status */ ,
+            W_GL_SEGMENT_D T149255 /* Dim_W_GL_SEGMENT_D_Segment1 */ ,
+              W_PARTY_D T158070 /* Dim_W_PARTY_D_Supplier */ ,
+      W_PARTY_ORG_D T176037 /* Dim_W_PARTY_ORG_D_Supplier */ ,
+      W_DAY_D T66755 /* Dim_W_DAY_D_Common */ ,XXLCC_WC_INV_DIST_FSCLPRD_A T355976 /* XXLCC_Fact_Wc_Inv_Dist_FSCLPRD_A */
+where  ( T149255.ROW_WID = T355976.SEGMENT1_WID and
+T159345.ROW_WID = T355976.APPROVAL_STATUS_WID and T66755.ROW_WID =
+T355976.INVOICED_ON_DT_WID and T149255.X_SEGMENT_NAME = 'L - LCC' and
+T159345.W_STATUS_CODE = 'APPROVED' and T176037.SUPPLIER_TYPE_NAME =
+'SOCIAL SERVICES HOME CARE' and T158070.ROW_WID = T355976.SUPPLIER_WID
+and T158070.PARTY_ORG_WID = T176037.ROW_WID and T313410.ROW_WID =
+T355976.APPROVED_DT_WID and (T158070.SUPPLIER_FLG in ('U', 'Y')) and
+(T159345.ROW_WID in (0) or T159345.W_STATUS_CLASS in
+('AP_INVOICE_DISTRIBUTION_APPROVAL')) and (T149255.SEGMENT_LOV_NAME in
+('XXLCC_GL_ORG_CODE', 'XXNCC_GL_ORG_CODE', 'XXNCH_GL_ORG_CODE',
+'XXPRB_GL_ORG_CODE')) )            group by T149255.X_SEGMENT_NAME
+) D1
+/

@@ -1,0 +1,499 @@
+#!/bin/bash
+
+########################################
+# Script Name - hc.sh
+# Description - Shell script to do the health checkof the database
+# Author      - Anita Jindal
+# Date        - 08 May 2018
+# Version     - 1.0
+########################################
+LOG_FILE=/tmp/report.log
+rm $LOG_FILE
+echo " "
+echo " "
+echo "--Starting Health Check--"  >> $LOG_FILE
+echo "---------------------"  >> $LOG_FILE
+echo " "
+echo " "
+
+Script Variable:
+$ORA_TAB
+$DB_NAME
+$connection
+$USERID
+$PASSWORD
+$RETVAL
+$db_name1
+$strLsnrName
+
+
+
+
+
+export OS=`uname`
+
+if [ $OS == "Linux" ]
+  then
+  ORA_TAB=/etc/oratab
+  echo "Oratab file is located at $ORA_TAB"  >> $LOG_FILE
+echo "---------------------"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+fi
+
+if [ $OS == "SunOS" ]
+  then
+  ORA_TAB=/var/opt/oracle/oratab
+  echo ""
+  echo "Oratab file is located at $ORA_TAB"  >> $LOG_FILE
+echo "---------------------"  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+echo " "    >> $LOG_FILE
+fi
+
+clear
+
+# Check databases and get the Database input to be checked
+# Check the pmon processes running on the server
+ps -aef | grep -i pmon | grep -v grep | cut -d"_" -f3 > /tmp/qq.out
+echo " "
+echo "Databases running on this server are : `cat /tmp/qq.out`"   >> $LOG_FILE
+echo " "   >> $LOG_FILE
+echo " "    >> $LOG_FILE
+echo "The databases configured in oratab are : `cat ${ORA_TAB} | grep -v "#" | cut -d":" -f1`"
+echo "------------------------------------------------------------------"
+echo ""
+read -p "Enter Database Name you need to check : " DB_NAME
+echo "------------------------------------------------------------------"
+echo "The database to be checked is : $DB_NAME"   >> $LOG_FILE
+echo " "   >> $LOG_FILE
+echo " "    >> $LOG_FILE
+
+echo ""
+
+if grep -Fxq "$DB_NAME" /tmp/qq.out
+ then
+echo ""
+echo "Database $DB_NAME is running on this server"   >> $LOG_FILE
+echo " " >> $LOG_FILE
+echo " "  >> $LOG_FILE
+ DB_RUN=1
+else
+echo "Database $DB_NAME is NOT running on this server!!!"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+ DB_RUN=0
+fi
+rm /tmp/qq.out
+
+
+#Check Remote Connectivity
+if [ $DB_RUN == 1 ]
+ then
+ export ORACLE_SID=`cat ${ORA_TAB} | grep ${DB_NAME} |  grep -v "#" | grep -v "+" | cut -d":" -f1`;
+ export ORACLE_HOME=`cat ${ORA_TAB} | grep ${DB_NAME} |  grep -v "#" | grep -v "+" | cut -d":" -f2`;
+ export PATH=${PATH}:${ORACLE_HOME}/bin;
+
+ $ORACLE_HOME/bin/tnsping $DB_NAME > /tmp/qq.out
+
+  if [ `tail -1 /tmp/qq.out | awk ' {print $1}'` == "OK" ]
+   then
+    #echo "Tnsping Output is fine."   >> $LOG_FILE
+echo " "   >> $LOG_FILE
+echo " "    >> $LOG_FILE
+echo "Trying to connect the database remotely"
+echo ""
+    read -p "Enter your ADM account : " USERID
+        stty -echo
+    read -p "Enter password for your ADM account : " PASSWD
+        stty echo
+# Connect to the database
+    CONNECTION=$USERID/$PASSWD@$DB_NAME
+    RETVAL=`$ORACLE_HOME/bin/sqlplus -silent $CONNECTION  <<!
+     SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
+     SELECT 'Alive' FROM dual;
+     EXIT;
+!`
+
+     if [ "$RETVAL" = "Alive" ]; then
+      DB_OK=0
+      echo ""
+      echo "Successfully connected to the database."  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+
+else
+      DB_OK=1
+#If ADM Account username or password is not valid then below error will report
+      echo ""
+      echo "Error while connecting to the database remotely.Invalid ADM username or password!!" >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+      echo "PLEASE CHECK THE REMOTE CONNECTION TO THE DATABASE"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+     fi
+  else
+#if Listener is not running then below error is reported.
+
+   echo "Unable to tnsping the database. Please check the error message!"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+  fi
+else
+ echo "Database $DB_NAME is NOT running on this server!!!"  >> $LOG_FILE
+echo "---------------------"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+fi
+echo""
+#Checking the listener status:
+echo ""  >> $LOG_FILE
+  echo "Below Listeners are running"  >> $LOG_FILE
+  echo ""  >> $LOG_FILE
+  ps -ef|grep -i tns|grep -v grep|awk '{print $(NF-1)}'  >> $LOG_FILE
+echo ""  >> $LOG_FILE
+echo ""  >> $LOG_FILE
+
+
+echo ""
+# Check the Blocking Sessions
+    echo ""
+    echo "Checking Blocking Session in the Database........"  >> $LOG_FILE
+echo "---------------------------------------------"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+    $ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<!
+     set lines 300
+     col sid for 99999
+     col "is blocking" for 99999
+     spool blck_sess.log
+     select  * from dba_blockers;
+     spool off;
+     EXIT;
+!
+     if grep -Fxq "no rows selected" blck_sess.log
+     then
+      echo ""
+      echo "No Blocking Lock in the Database"   >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+      echo ""
+     else
+      echo ""
+      echo "Blocking Sessions Found. Please investigate further"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+      echo ""
+     fi
+     rm blck_sess.log
+
+# Blocking Session block end
+
+
+# Check the RMAN BACKUP in progress:
+    echo ""
+    echo "Checking RMAN BACKUP in progress in the Database........" >> $LOG_FILE
+echo "---------------------------------------------"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+    echo ""
+    $ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<!
+    spool RMAN.log
+    set lines 300
+    col sid for 99999
+    select sid, serial#, sofar, totalwork, opname,
+    round(sofar/totalwork*100,2) "% Complete"
+    from gv\$session_longops
+    where opname LIKE 'RMAN%'
+    and opname NOT LIKE '%aggregate%'
+    and totalwork != 0
+    and sofar <> totalwork;
+    spool off;
+    EXIT;
+!
+     if grep -Fxq "no rows selected" RMAN.log
+     then
+      echo ""
+      echo "No RMAN BACKUP is in progress"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+      echo ""
+     else
+      echo ""
+      echo "RMAN BACKUP is in progress. Please investigate further"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+      echo ""
+     fi
+     rm RMAN.log
+
+
+# Check Open Mode
+    echo""
+    echo "Checking Open mode of the database........" >> $LOG_FILE
+echo "-----------------------------------"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+    $ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<!
+     SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
+     spool op_mod.log
+     select open_mode from v\$database;
+     spool off;
+     EXIT;
+!
+     if grep "READ WRITE" op_mod.log
+     then
+      echo ""
+      echo "Database is OPEN in READ WRITE mode"  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+      echo ""
+     else
+      echo ""
+      echo "Database is not properly Started. Please check the alert log!!!" >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+      echo ""
+     fi
+      rm op_mod.log
+# Check Cluster
+    echo"" >> $LOG_FILE
+ echo"" >> $LOG_FILE
+    echo "Checking whether database is RAC or Non-RAC." >> $LOG_FILE
+    echo ""  >> $LOG_FILE
+    $ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<!
+     SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
+     spool clu.log
+     select VALUE from sys.v_\$parameter where NAME like 'cluster_database';
+     spool off;
+     EXIT;
+!
+     if grep  "FALSE" clu.log
+     then
+      echo ""
+      echo "Database is non-RAC."  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+      echo ""
+       $ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<!
+     SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
+     spool clu.log
+     select host_name from sys.gv_\$instance;
+     spool off;
+     EXIT;
+!
+      echo ""
+      echo "Database is running on server :"  >> $LOG_FILE
+      echo "" >> $LOG_FILE
+      cat clu.log   >> $LOG_FILE
+      echo ""   >> $LOG_FILE
+echo " "   >> $LOG_FILE
+     else
+      echo ""
+      echo "Database is RAC"  >> $LOG_FILE
+      echo ""  >> $LOG_FILE
+       $ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<!
+     SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
+     spool clu.log
+     select host_name from sys.gv_\$instance;
+     spool off;
+     EXIT;
+!
+      echo ""
+      echo "Instances are running on the below  servers : " >> $LOG_FILE
+      echo "" >> $LOG_FILE
+      cat clu.log  >> $LOG_FILE
+echo " "  >> $LOG_FILE
+echo " "   >> $LOG_FILE
+      echo ""
+     fi
+
+      rm clu.log
+# Open Mode block end
+
+#Check the instances
+     echo""
+     echo "Checking instances running" >> $LOG_FILE
+
+$ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<!
+     SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
+     spool inst.log
+     select instance_name from sys.gv_\$instance;
+     spool off;
+     EXIT;
+!
+      echo ""
+      echo "Instances running:" >> $LOG_FILE
+      echo "" >> $LOG_FILE
+      cat inst.log    >> $LOG_FILE
+      echo ""  >> $LOG_FILE
+      rm inst.log
+
+
+
+# Check the long running sessions:
+    echo ""
+    echo "Checking session longops in the Database........"  >> $LOG_FILE
+    echo "---------------------------------------------"  >> $LOG_FILE
+    echo " "  >> $LOG_FILE
+    echo " "   >> $LOG_FILE
+
+    $ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<!
+     set lines 300
+     col sid for 99999
+     spool longops.log
+     SELECT SID,SOFAR,TOTALWORK,TIME_REMAINING FROM gv\$SESSION_LONGOPS where time_remaining>0;
+     spool off;
+     EXIT;
+!
+     if grep -Fxq "no rows selected" longops.log
+     then
+      echo ""
+      echo "No long running queries in the Database"  >> $LOG_FILE
+      echo ""   >> $LOG_FILE
+     else
+      echo ""
+      echo "long running sessions Found. Please investigate further" >> $LOG_FILE
+      echo ""  >> $LOG_FILE
+     fi
+     rm longops.log
+
+#Check the Tablespace status
+
+
+ echo ""
+    echo "Checking Tablespaces having free space less than 100 MB........" >> $LOG_FILE
+    echo "---------------------------------------------"  >> $LOG_FILE
+    echo " "   >> $LOG_FILE
+    $ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<! >/dev/null
+    set serveroutput on
+    set linesize 800
+    set heading off
+    set pagesize 200
+    set feedback off
+    exec dbms_output.put_line('==========Space Summary==============');
+    spool TS.log
+    select a.tablespace_name,A.Allocated,
+    B.Freespace,round(b.freespace/a.allocated*100) "% Free"
+    from
+    (select tablespace_name ,sum(bytes)/1024/1024 Allocated from dba_data_files group by tablespace_name) A ,
+    (select tablespace_name,sum(bytes)/1024/1024 Freespace
+    from dba_free_space group by tablespace_name) B
+    where a.tablespace_name=b.tablespace_name ;
+    spool off;
+    EXIT;
+!
+touch temp.txt
+#for i in `cat TS.log  | sed -e's/  */ /g' | tr " " ":"`;
+for i in `cat TS.log  | sed -e's/  */ /g' | sed '/^$/d'| tr " " ":"`;
+do
+j=`echo $i |cut -d: -f3`;
+k=`echo $i |cut -d: -f4`;
+p=`echo ${j%%.*}`;
+q=`echo ${k%%.*}`;
+re='^[0-9]+$';
+if [[ $p -lt 100 && $q -lt 20 ]] ; then
+echo $i|cut -d: -f1 >> temp.txt ;
+fi;
+done
+cat temp.txt  >> $LOG_FILE
+t=`cat temp.txt | wc -l`;
+if [ $t -eq 0 ]; then
+echo ""
+echo "There is no Tablespace reported less than 100 MB"  >> $LOG_FILE
+echo "" >> $LOG_FILE
+echo "" >> $LOG_FILE
+fi;
+rm temp.txt;
+rm TS.log
+echo " "  >> $LOG_FILE
+
+echo "---------------------------------------------"  >> $LOG_FILE
+    echo " "  >> $LOG_FILE
+    echo " "   >> $LOG_FILE
+
+
+#Checking filesystem status
+echo ""
+ echo "Checking filesystem having available space less than 500 MB......" >> $LOG_FILE
+echo "---------------------------------------------"  >> $LOG_FILE
+    echo " "  >> $LOG_FILE
+    echo " "   >> $LOG_FILE
+for i in `df -k | grep "%"|sed -e's/  */ /g' | tr " " ":"|grep -v Filesystem`;
+do
+j=`echo $i |  tr ":" " " | awk '{print $(NF-2)}'`;
+if [ $j -lt 512000 ] ; then echo $i |  tr ":" " " | awk '{printf("%s:Free %sKB:Used %sKB:Use %s\n",$(NF),$(NF-2),$(NF-3),$(NF-1));}';
+fi;
+done>FS.log
+cat FS.log | egrep -v '/boot|/dev/shm|/dev/vx|/opt/opsware|/var/opt/opsware|/opt/IBM/ITM|/opt/Tivoli'   >> $LOG_FILE
+k=`cat FS.log | egrep -v '/boot|/dev/shm|/dev/vx|/opt/opsware|/var/opt/opsware|/opt/IBM/ITM|/opt/Tivoli'| wc -l`;
+if [ $k -eq 0 ]; then
+echo ""
+echo  "No filesystem having space less than 500 MB" >> $LOG_FILE
+echo "" >> $LOG_FILE
+fi;
+rm FS.log
+echo ""
+echo "" >> $LOG_FILE
+echo "" >> $LOG_FILE
+ echo "Checking Alert log file location"  >> $LOG_FILE
+echo "-----------------------------------------" >> $LOG_FILE
+    echo " "  >> $LOG_FILE
+$ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<! >/dev/null
+SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
+spool db_version.txt;
+select version from v\$instance;
+spool off;
+EXIT;
+!
+ver=`cat db_version.txt|egrep '8|9|10|11|12' | cut -d"." -f1`
+if [ $ver -lt 12 ]; then
+$ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<! >/dev/null
+SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
+    spool alr.txt
+    select value from v\$parameter where NAME='background_dump_dest';
+    spool off;
+    EXIT;
+!
+else
+$ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<! >/dev/null
+SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
+spool alr.txt
+    select value from v\$diag_info where name='Diag Trace';
+    spool off;
+    EXIT;
+!
+fi
+echo ""
+cat alr.txt   >> $LOG_FILE
+echo "" >> $LOG_FILE
+echo " Above is alert log file location. Please check for any ORA errors."  >> $LOG_FILE
+echo "" >> $LOG_FILE
+rm alr.txt
+
+echo ""
+echo "" >> $LOG_FILE
+echo "-----------------------------------------" >> $LOG_FILE
+if [[ "$DB_NAME" == "TTPP"* ]]; then
+      echo "" >> $LOG_FILE
+      echo "This is Cloud9 Database. Please check Latch BUG issue referring to KB0041123  "  >> $LOG_FILE
+fi
+
+echo ""
+echo "" >> $LOG_FILE
+echo "" >> $LOG_FILE
+echo "Check total no. of processes and sessions" >> $LOG_FILE
+echo "-----------------------------------------" >> $LOG_FILE
+echo " "  >> $LOG_FILE
+$ORACLE_HOME/bin/sqlplus -S '/ as sysdba' <<! >/dev/null
+spool session.log
+select resource_name, current_utilization, max_utilization from gv\$resource_limit where resource_name in ('processes','sessions');
+spool off;
+EXIT;
+!
+echo ""
+cat session.log   >> $LOG_FILE
+echo "" >> $LOG_FILE
+rm session.log
+echo "" >> $LOG_FILE

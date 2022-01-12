@@ -1,0 +1,37 @@
+** Check historical values of shared pool components
+
+set lines 200
+
+col begin_interval time for a60
+col name for a30
+
+
+select a.snap_id, b.begin_interval_time, a.pool, a.name, a.bytes/1024/1024 "MB"
+from dba_hist_sgastat a, dba_hist_snapshot b
+where a.pool = 'shared pool'
+and a.name in ('KGLH0')
+and a.snap_id=b.snap_id
+order by a.snap_id asc;
+
+
+select a.snap_id, b.begin_interval_time, a.pool, a.name, a.bytes/1024/1024 "MB"
+from dba_hist_sgastat a, dba_hist_snapshot b
+where a.pool = 'shared pool'
+and a.name in ('SQLA')
+and a.snap_id=b.snap_id
+order by a.snap_id asc;
+
+select a.snap_id, b.begin_interval_time, a.pool, a.name, a.bytes/1024/1024 "MB"
+from dba_hist_sgastat a, dba_hist_snapshot b
+where a.pool = 'shared pool'
+and a.name in ('KGH: NO ACCESS')
+and a.snap_id=b.snap_id
+order by a.snap_id asc;
+
+select a.snap_id, b.begin_interval_time, a.pool, a.name, a.bytes/1024/1024 "MB"
+from dba_hist_sgastat a, dba_hist_snapshot b
+where a.pool = 'shared pool'
+and a.name in ('free memory')
+and a.snap_id=b.snap_id
+order by a.snap_id asc;
+

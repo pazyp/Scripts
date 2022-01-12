@@ -1,0 +1,64 @@
+Alert:
+ 
+db_temp_usage_PRD3
+ 
+Connet to v06sw252.v06em (EMSS Edinburgh LP) using putty. Login in with your landing pad username and password.
+ 
+If logging in for the first time, run ls -al
+cat .bashrc
+ 
+add in: alias ebssupp="ssh -l ebssupp 172.19.129.100"
+
+From the lp, run ebssupp alias to connect to ebssupp.
+ 
+Connect to PRD3 env with command:
+ 
+vit_l PRD3 cp
+ 
+Change directory to:
+ 
+cd /export/ops/ebssupp/ve-deanm1
+ 
+Connect to sqlplus with apps username and password (alias sqlapps)
+ 
+connect to the host to grep for temp commands:
+ 
+!ls | grep temp
+ 
+Run the temp space identifier script:
+ 
+@temp_space_identify.sql
+
+------------------------------------------------------------------------------------
+ 
+ 
+db_long_ops_PRD3
+
+Run the long ops command from sqlplus as apps.
+
+@longops
+
+
+------------------------------------------------------------------------------------
+
+Alert:
+ 
+EBS_Long_Running_CR_PRD3_CP2
+ 
+Connect to EMSS Edinburgh LP
+ 
+http://ebsprod.emss.gov.uk:8003
+ 
+Username: sysadmin
+Password in keypass
+ 
+In the navigator, select system administrator, under the system admin pane select Concurrent: Requests.
+ 
+Oracle Apps will open in a new window.
+ 
+Expand concurrent > requests > open
+ 
+On the find requests window, select specific request and search for the job number specified in the ticket.
+ 
+If there is any issue with the job, email the details to ICT servicedesk and ask them to get the EBS sysadmin team to check it for you.
+ 

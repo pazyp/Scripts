@@ -1,0 +1,8 @@
+${DOMAIN_HOME}/bin/stopManagedWebLogic.sh bi_server1
+
+${DOMAIN_HOME}/bin/stopWebLogic.sh
+
+
+ps -ef | grep Node
+
+kill -9 <PID>

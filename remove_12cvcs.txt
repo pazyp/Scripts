@@ -1,0 +1,139 @@
+export DBNAME=PCGB0001
+export VIPNAME=lonuc23901
+
+#export DBNAME=ECGBVCS2
+#export VIPNAME=viplonr7172b
+
+####################
+# REMOVE VCS config
+
+### Delete DB service group !
+
+haconf -makerw
+
+# Delete DB/listener res.
+hares -delete RES_LISTENER_${DBNAME}_${VIPNAME}
+hares -delete RES_${DBNAME}
+# Delete SG
+hagrp -unlink SG_${DBNAME} SG_${DBNAME}_OS
+hagrp -delete SG_${DBNAME}
+
+### Remove OS service group
+
+hares -delete RES_${DBNAME}_Mnt_home_oracle
+hares -delete RES_${DBNAME}_Mnt_admin
+hares -delete RES_${DBNAME}_Mnt_diag
+hares -delete RES_${DBNAME}_Mnt_odbatools
+hares -delete RES_${DBNAME}_Mnt_data01
+hares -delete RES_${DBNAME}_Mnt_arch01
+hares -delete RES_${DBNAME}_Mnt_dumps
+hares -delete RES_${DBNAME}_Mnt_redo01
+hares -delete RES_${DBNAME}_Mnt_redo02
+hares -delete RES_${DBNAME}_DG_${DBNAME}_dbappdg
+hares -delete RES_${DBNAME}_DG_${DBNAME}_dbdatadg
+hares -delete RES_${DBNAME}_DG_${DBNAME}_dbarchdg
+hares -delete RES_${DBNAME}_DG_${DBNAME}_dbdumpdg
+hares -delete RES_${DBNAME}_DG_${DBNAME}_dbredo1dg
+hares -delete RES_${DBNAME}_DG_${DBNAME}_dbredo2dg
+# Delete VIP and SG
+hares -offline RES_${DBNAME}_IPB_Public -sys lonrs12571
+hares -offline RES_${DBNAME}_IPB_Public -sys lonrs12572
+
+# Wait to make sure VIP interface disappears from ifconfig
+sleep 5
+
+hares -delete RES_${DBNAME}_IPB_Public
+hagrp -delete SG_${DBNAME}_OS
+
+# Make VCS RO
+haconf -dump -makero
+
+####################
+
+SHUTDOWN DB/LISTENER
+
+(login as oracle and shutwown ABORT):
+
+(if this is the only DB on the cluster) -  make sure NO oracle processes are running and no Shared memory segments are owned by oracle
+
+
+####################
+### REMOVE FS/DGs
+
+cd /
+umount -f /oradata/${DBNAME}/data01 /oradata/${DBNAME}/redo01 /oradata/${DBNAME}/redo02
+umount -f /oraarch/${DBNAME}/arch01 /oradumps/${DBNAME}
+umount -f /opt/oracle/${DBNAME}/admin /opt/oracle/${DBNAME}/diag /opt/oracle/${DBNAME}/odbatools
+umount -f /opt/oracle/${DBNAME}
+
+# Remove oratab entry
+egrep -v "${DBNAME}" /etc/oratab > /tmp/oratab
+/bin/mv /etc/oratab /etc/oratab.old
+/bin/cp -f /tmp/oratab /etc/oratab
+
+# Remove all DB mount points
+rm -fr /oradata/${DBNAME} /oraarch/${DBNAME} /oradumps/${DBNAME}
+
+# Remove VERITAS DG/LUNS for this DB
+vxdg -ff destroy ${DBNAME}_dbappdg
+vxdg destroy ${DBNAME}_dbdatadg
+vxdg destroy ${DBNAME}_dbdumpdg
+vxdg destroy ${DBNAME}_dbarchdg
+vxdg destroy ${DBNAME}_dbredo1dg
+vxdg destroy ${DBNAME}_dbredo2dg
+
+# REMOVE LUNs for this DB
+# for ECGBVCS1 :
+vxdisk -f rm emc0_319d
+vxdisk -f rm emc0_319e
+vxdisk -f rm emc0_319f
+vxdisk -f rm emc0_3195
+vxdisk -f rm emc0_3193
+vxdisk -f rm emc0_3194
+
+#for ECGBVCS2 :
+vxdisk -f rm 3pardata0_6529
+vxdisk -f rm 3pardata0_6535
+vxdisk -f rm 3pardata0_6537
+vxdisk -f rm 3pardata0_6536
+vxdisk -f rm 3pardata0_6531
+vxdisk -f rm 3pardata0_6532
+
+###### STEP TO FOLLOW IF THIS IS THE *ONLY REMANING* ORACLE DB ON CLUSTER:
+
+# CLEANUP TOOLS and /opt/oracle
+
+# Kill all odbadmin processes
+# cleanup Tools repository
+
+# remove FS/mounts
+
+umount -f /opt/oracle
+umount -f /opt/app/odbatools
+rmdir /opt/oracle
+rm -fr /opt/app/odbatools
+lvremove -f /dev/mapper/rootvg-oratools
+lvremove -f /dev/mapper/rootvg-oracle
+
+# Remove root data/arch dirs (CAREFUL! MUST BE ONLY db ON CLUSTER)
+# Do NOT remove /oradumps (supposed to be in standard Linux build - need to check on ??)
+rmdir /oradata /oraarch
+
+# Remove /etc/fstab entries
+egrep -v "${DBNAME}|/opt/oracle|/opt/app/odbatools" /etc/fstab > /tmp/fstab
+/bin/mv /etc/fstab /etc/fstab.old
+/bin/cp -f /tmp/fstab /etc/fstab
+# Have a look if it's OK...
+#cat /etc/fstab
+
+# Cleanup of oraenv files
+cd /usr/local/bin
+rm -f oraenv coraenv dbhome
+
+# Remove $HOME oracle
+umount -f /home/oracle
+rm -fr /export/home/oracle
+
+# Remove $HOME odbadmin
+umount -f /home/odbadmin
+rm -fr /export/home/odbadmin

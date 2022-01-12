@@ -1,0 +1,45 @@
+###############SOA Purging Steps#########################
+https://support.oracle.com/epmos/faces/DocumentDisplay?_afrLoop=57593114878038&id=1384379.1&_afrWindowMode=0&_adf.ctrl-state=ctj9sgy1c_4#
+
+
+select state, count(*) from cube_instance group by state;
+
+0 --> INITIATED
+1 --> OPEN AND RUNNING
+2 --> OPEN AND SUSPENDED
+3 --> OPEN AND FAULTED
+4 --> CLOSED AND PENDING
+5 --> closed and completed
+6 --> closed and faulted
+7 --> closed and canceled
+8 --> closed and aborted
+9 --> closed and stale
+10--> Non Recoverable
+
+SELECT SUM(bytes/1024/1024) "MB Free"
+FROM dba_free_space
+WHERE tablespace_name = 'IP_SOAINFRA';
+
+####To clear out instances from a specific date/time (i.e. January 1, 2011 to January 31, 2011) 
+with a retention for all instances updated by January 31 2011, batch of 20000 instances with a runtime
+of 60 minutes
+
+execute soa.delete_instances ( to_timestamp('2013-10-1','YYYY-MM-DD'),to_timestamp('2013-10-20','YYYY-MM-DD'),20000,120,to_timestamp('2010-01-31','YYYY-MM-DD'),false);
+
+select state, count(*) from cube_instance group by state;
+
+SELECT SUM(bytes/1024/1024) "MB Free"
+FROM dba_free_space
+WHERE tablespace_name = '<TABLE_SPACE_NAME>';
+
+Run Recleam SOA space .sql (/home/oracle/velos/paz/shrink_soa_space.sql)
+
+SELECT SUM(bytes/1024/1024) "MB Free"
+FROM dba_free_space
+WHERE tablespace_name = '<TABLE_SPACE_NAME>';
+
+
+
+##########Tables where space reclaimed########################
+audit_trail, audit_details, cube_instance, cube_scope, dlv_message, dlv_subscription, 
+document_ci_ref, document_dlv_msg_ref, headers_properties, work_item, wi_fault, xml_document 

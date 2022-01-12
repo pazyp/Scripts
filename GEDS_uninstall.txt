@@ -1,0 +1,19 @@
+
+As oracle
+1. shutdown database and listener
+2. cp /apps/dbeng/oracle/_DEV_/utils/rmbld/voracle_remove.ksh /tmp
+as root modify the file  voracle_remove.ksh
+2.1. comment out killing oracle sessions
+2.2. put ORAVG=PCGB0022_oravg
+output from (as root)
+(DEV) root@lonrs12336# vgs
+  VG             #PV #LV #SN Attr   VSize   VFree
+  PCGB0022_oravg   1   9   0 wz--n- 190.00g     0
+  rootvg           1  14   0 wz--n-  59.59g 13.75g 
+3. remove install
+(DEV) root@lonrs12336# ./voracle_remove.ksh PCGB0022 | tee -a /tmp/ora12cbuildremove.log
+
+rm -fr /opt/app/odbatools/* 
+
+
+

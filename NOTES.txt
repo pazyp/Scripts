@@ -1,0 +1,929 @@
+export ORACLE_HOME=/database/db/12c
+
+
+db12c
+
+
+db_name=DBUA3005
+db_unique_name=DBUA3005901
+shared_pool_size=128m
+cpu_count=1
+diagnostic_dest=/database/db/12c/log
+_enable_NUMA_support=false
+
+
+CREATE CONTROLFILE REUSE DATABASE "db12c" NORESETLOGS NOARCHIVELOG;
+
+
+create pluggable database "BIPDB1" FILE_NAME_CONVERT= ('/pdbseed/', '/BIPDB1/');
+
+
+create pluggable database bipdb1 admin user bipdb identified by Velos123 file_name_convert = ('/pdbseed/', '/bipdb1/');
+
+alter pluggable database bipdb1 open;
+
+
+CONN / AS SYSDBA
+ALTER USER scott IDENTIFIED BY tiger ACCOUNT UNLOCK;
+
+CREATE OR REPLACE DIRECTORY dump_dir AS '/home/oras004/exports';
+GRANT READ, WRITE ON DIRECTORY dump_dir TO sys;
+
+select count(W_WRKFC_EVT_FS, W_WRKFC_EVENT_TYPE_D, W_EMPLOYEE_D, W_INTL_ASSGN_D, W_USER_D, W_EMPLOYEE_D, W_GL_ACCOUNT_D, W_INT_ORG_D, W_BUSN_LOCATION_D, W_HR_POSITION_D, W_PAY_GRADE_D, W_INT_ORG_D, W_JOB_D) from dual;
+
+
+expdp olap/olap tables=W_WRKFC_EVT_FS,W_WRKFC_EVENT_TYPE_D,W_EMPLOYEE_D,W_INTL_ASSGN_D,W_USER_D,W_EMPLOYEE_D,W_GL_ACCOUNT_D,W_INT_ORG_D,W_BUSN_LOCATION_D,W_HR_POSITION_D,W_PAY_GRADE_D,W_INT_ORG_D,W_JOB_D  directory=dump_dir dumpfile=ETLT.dp logfile=ETLT.lo
+
+impdp olap/EM55UAT0lap tables=W_WRKFC_EVT_FS,W_WRKFC_EVENT_TYPE_D,W_EMPLOYEE_D,W_INTL_ASSGN_D,W_USER_D,W_EMPLOYEE_D,W_GL_ACCOUNT_D,W_INT_ORG_D,W_BUSN_LOCATION_D,W_HR_POSITION_D,W_PAY_GRADE_D,W_INT_ORG_D,W_JOB_D  directory=dump_dir dumpfile=ETLT.dp logfile=ETLT.lo TABLE_EXISTS_ACTION=TRUNCATE
+
+EM55UAT0lap
+
+#!/bin/ksh
+
+print_usage() {
+  echo "Usage:"
+  echo "  $PROGNAME --tns <Oracle Sid or Hostname/IP address>"
+  echo "  $PROGNAME --db <ORACLE_SID>"
+  echo "  $PROGNAME --login <ORACLE_SID>"
+  echo "  $PROGNAME --cache <ORACLE_SID> <USER> <PASS> <CRITICAL> <WARNING>"
+  echo "  $PROGNAME --tablespace <ORACLE_SID> <USER> <PASS> <TABLESPACE> <CRITICAL> <WARNING>"
+  echo "  $PROGNAME --oranames <Hostname>"
+  echo "  $PROGNAME --help"
+  echo "  $PROGNAME --version"
+}
+ 
+
+<Apr 9, 2014 4:57:41 PM CEST> <Warning> <EJB> <BEA-010061> <The Message-Driven EJB: CaseEventMDB is unable to connect to the JMS destination: jms/bpm/CaseEventQueue. The Error was:
+The destination for the MDB CaseEventMDB(Application: soa-infra, EJBComponent: oracle.bpm.casemgmt.ejb.jar) could not be resolved at this time.  Please ensure the destination is available at the JNDI name jms/bpm/CaseEventQueue.  The EJB container will periodically attempt to resolve this MDB destination and additional warnings may be issued.>
+====> CubeEngine load testBam/BPELProcess1 took 529 ms
+====> CubeEngine load Test_date/test_process took 314 ms
+
+#----------------------------------------------------------------------------------------------
+# SOA JVM Increase for SOAPRD performed by AP 29/01/14
+#----------------------------------------------------------------------------------------------
+
+if [ "${SERVER_NAME}" = "" ] || [ "${SERVER_NAME}" = "d03-c00-a01" ]; then
+  DEFAULT_MEM_ARGS="-Xms512m -Xmx1024m"
+  PORT_MEM_ARGS="-Xms768m -Xmx1536m"
+elif [ "${SERVER_NAME}" = "" ] || [ "${SERVER_NAME}" = "d03-c01-s01" ]; then
+  DEFAULT_MEM_ARGS="-Xms512m -Xmx1024m"
+  PORT_MEM_ARGS="-Xms768m -Xmx1536m"
+else
+  DEFAULT_MEM_ARGS="-Xms768m -Xmx4096m"
+  PORT_MEM_ARGS="-Xms768m -Xmx4096m"
+fi
+
+#-----------------------------------------------------------------------------------------------
+# End of change 29/01/14 by AP
+#-----------------------------------------------------------------------------------------------
+
+
+
+<Apr 9, 2014 5:58:31 PM CEST> <Error> <Deployer> <BEA-149205> <Failed to initialize the application 'MSC_STATUS' due to error weblogic.application.ModuleException: .
+Cannot open database "vs-cen-db11" requested by the login. The login failed.
+
+
+<Apr 9, 2014 6:03:33 PM CEST> <Warning> <EJB> <BEA-010061> <The Message-Driven EJB: CaseEventMDB is unable to connect to the JMS destination: jms/bpm/CaseEventQueue. The Error was:
+The destination for the MDB CaseEventMDB(Application: soa-infra, EJBComponent: oracle.bpm.casemgmt.ejb.jar) could not be resolved at this time.  Please ensure the destination is available at the JNDI name jms/bpm/CaseEventQueue
+.  The EJB container will periodically attempt to resolve this MDB destination and additional warnings may be issued.>
+
+
+CONN / AS SYSDBA
+ALTER USER scott IDENTIFIED BY tiger ACCOUNT UNLOCK;
+
+CREATE OR REPLACE DIRECTORY dump_dir AS '/backup/dccorafin10.derbyad.net/Dump';
+GRANT READ, WRITE ON DIRECTORY dump_dir TO bawdev;
+
+
+
+
+expdp baw/baw schemas=baw directory=dump_dir dumpfile=baw.dmp logfile=bawexpdp.log
+
+REMAP_SCHEMA=PROD:DEVP
+
+impdp bawdev/bawdev schemas=baw directory=dump_dir dumpfile=baw.dmp logfile=bawixpdp.log REMAP_SCHEMA=BAW:BAWDEV table_exists_action=truncate
+
+
+
+USERNAME                       TEMPORARY_TABLESPACE           PROFILE
+------------------------------ ------------------------------ ------------------------------
+PRD1_MDS                       TEMP                           DEFAULT
+PRD1_BIPLATFORM                TEMP                           DEFAULT
+SYSMAN                         TEMP                           DEFAULT
+DBSNMP                         TEMP                           DEFAULT
+ANONYMOUS                      TEMP                           DEFAULT
+EXFSYS                         TEMP                           DEFAULT
+WMSYS                          TEMP                           DEFAULT
+XDB                            TEMP                           DEFAULT
+APPQOSSYS                      TEMP                           DEFAULT
+OLAPSYS                        TEMP                           DEFAULT
+MGMT_VIEW                      TEMP                           DEFAULT
+SYS                            TEMP                           DEFAULT
+SYSTEM                         TEMP                           DEFAULT
+ORACLE_OCM                     TEMP                           DEFAULT
+OUTLN                          TEMP                           DEFAULT
+DIP                            TEMP                           DEFAULT
+XS$NULL                        TEMP                           DEFAULT
+DAC                            ETLTEMP01                      DEFAULT
+INFA                           ETLTEMP01                      DEFAULT
+OLAP                           BITEMP01                       DEFAULT
+
+20 rows selected.
+
+TABLESPACE_NAME                   total MB    used MB allocated MB      %used
+------------------------------- ---------- ---------- ------------ ----------
+TEMP                                 10240          0        10239          0
+ETLTEMP01                             3072          0         2713        .14
+BITEMP01                             76800          0        76795          0
+
+drwxr-x---   2 obidprd1 obiee       1.0K Mar  7 09:28 .
+drwxr-xr-x   4 obidprd1 obiee        512 Apr  9  2013 ..
+-rw-r-----   1 obidprd1 obiee        15G Apr 10 09:13 bitemp01_01.dbf
+-rw-r-----   1 obidprd1 obiee        15G Apr 10 09:09 bitemp01_02.dbf
+-rw-r-----   1 obidprd1 obiee        15G Apr 10 09:25 bitemp01_03.dbf
+-rw-r-----   1 obidprd1 obiee        15G Apr 10 09:13 bitemp01_04.dbf
+-rw-r-----   1 obidprd1 obiee        15G Apr 10 09:03 bitemp01_05.dbf
+-rw-r-----   1 obidprd1 obiee        32M Apr 10 09:31 control01.ctl
+-rw-r-----   1 obidprd1 obiee        32M Apr 10 09:31 control03.ctl
+-rw-r-----   1 obidprd1 obiee       2.0G Apr 10 09:18 dacd01.dbf
+-rw-r-----   1 obidprd1 obiee       1.0G Apr 10 09:18 daci01.dbf
+-rw-r-----   1 obidprd1 obiee       1.0G Apr  9 21:05 etltemp01_01.dbf
+-rw-r-----   1 obidprd1 obiee       2.0G Apr  9 22:00 etltemp01_02.dbf
+-rw-r-----   1 obidprd1 obiee       5.5G Apr 10 09:26 infad01.dbf
+-rw-r-----   1 obidprd1 obiee       1.0G Apr 10 09:18 infai01.dbf
+-rw-r-----   1 obidprd1 obiee       125G Apr 10 09:27 olapd01.dbf
+-rw-r-----   1 obidprd1 obiee        40G Apr 10 09:30 olapd02.dbf
+-rw-r-----   1 obidprd1 obiee        40G Apr 10 09:30 olapd03.dbf
+-rw-r-----   1 obidprd1 obiee        40G Apr 10 09:30 olapd04.dbf
+-rw-r-----   1 obidprd1 obiee        16G Apr 10 09:18 olapi01.dbf
+-rw-r-----   1 obidprd1 obiee       1.5G Apr 10 09:18 olapi02.dbf
+-rw-r-----   1 obidprd1 obiee       1.5G Apr 10 09:18 olapi03.dbf
+-rw-r-----   1 obidprd1 obiee       2.0G Apr 10 09:18 olapi04.dbf
+-rw-r-----   1 obidprd1 obiee        64M Apr 10 09:18 PRD1_biplatform.dbf
+-rw-r-----   1 obidprd1 obiee       100M Apr 10 09:18 PRD1_mds.dbf
+-rw-r-----   1 obidprd1 obiee       3.4G Apr 10 09:31 sysaux01.dbf
+-rw-r-----   1 obidprd1 obiee       1.7G Apr 10 09:27 system01.dbf
+-rw-r-----   1 obidprd1 obiee        10G Apr 10 09:31 temp01.dbf
+-rw-r-----   1 obidprd1 obiee        96G Apr 10 09:31 undotbs01.dbf
+
+
+/obidprd1/data06/prd1
+
+create TEMPORARY TABLESPACE BITEMP02 TEMPFILE '/obidprd1/data06/prd1/bitemp02_1.dbf' SIZE 5G AUTOEXTEND ON NEXT 5G MAXSIZE 15G;
+
+alter TABLESPACE BITEMP02 add TEMPFILE '/obidprd1/data06/prd1/bitemp02_5.dbf' SIZE 5G AUTOEXTEND ON NEXT 5G MAXSIZE 15G;
+
+
+
+alter user INFA default temporary tablespace ETLTEMP02;
+
+alter user olap temporary tablespace BITEMP02;
+
+
+DAC                            ETLTEMP01                      DEFAULT
+INFA                           ETLTEMP01                      DEFAULT
+OLAP                           BITEMP01                       DEFAULT
+
+ALTER DATABASE TEMPFILE '/obidprd1/data06/prd1/temp02_1.dbf' DROP 
+     INCLUDING DATAFILES;
+	 
+	 
+ALTER TABLESPACE ETLTEMP01 SHRINK SPACE KEEP 2G;	
+
+ALTER TABLESPACE BAW_DATA SHRINK SPACE KEEP 60G; 
+
+ALTER DATABASE DATAFILE '/u03/oradata/OBIDEV/bawdevdata08.dbf' AUTOEXTEND ON next 2G maxsize 34g;
+
+ALTER DATABASE DATAFILE '/u03/oradata/OBIDEV/users01.dbf' RESIZE 26G;
+
+USERS                25330       2852       32767       10289         31  XXXXXXX---
+
+
+
+    
+TEST
+dev_biplatform
+dev_MDS
+
+DEV
+DEBOBI_biplatform
+DEVOBI_MDS
+
+DROP TABLESPACE DEVWIN2_IAS_TEMP INCLUDING CONTENTS AND DATAFILES CASCADE CONSTRAINTS;
+
+drop user DEVWIN2_BIPLATFORM cascade;
+
+select profile, resource_name, limit from dba_profiles where profile='DEFAULT' and
+resource_name ='IDLE_TIME';
+
+
+
+adpatch patchtop=`pwd` logfile=u19790518.log driver=u19790518.drv workers=4 interactive=yes options=hotpatch
+
+adpatch patchtop=`pwd` logfile=u20129410.log driver=u20129410.drv workers=4 interactive=yes options=hotpatch,forcecopy
+
+cd $AD_TOP/bin
+adrelink.sh force=y “ad adpatch” “ad adsplice” “ad adadmin”
+adrelink.sh force=y "pa PACCBL"
+
+To relink all AD executables:
+adrelink.sh force=y “ad all”
+
+ps -ef |grep frmcmp
+
+
+ps -ef |grep PERWSEMA.fmx
+
+kill -9 `ps -ef |grep frmcmp| awk '{print $2}'`
+
+adctrl
+
+
+
+SUPPManager
+C23hester
+
+select count(*) from proddta.F0911Z1 where VNDGJ >= date_to_julian(to_date('26/02/2014','DD/MM/YYYY')); 
+
+select VNEDDT, VNDGJ, VNEDSP, count(*) from proddta.F0911Z1 where VNDGJ >= date_to_julian(to_date('26/02/2014','DD/MM/YYYY')) group by VNEDDT, VNDGJ, VNEDSP; 
+
+"<Database>"."<Catalog>"."<Schema>"."<Table>"
+"Oracle Analytics Usage"."Usage Tracking Connection Pool"
+"Oracle Analytics Usage"."Catalog"."dbo"."S_NQ_ACCT"
+
+PROCEDURE dangling_payload_delete(p_transaction_size NUMBER, p_stop_time 
+INTEGER, p_older_than TIMESTAMP) 
+
+exec dangling_payload_delete (10000, 180, TO_TIMESTAMP('08-04-2014:09:00:00','DD-MM-YYYY HH24:MI:SS'));
+
+(20000, 240);
+
+
+-rw-r--r--   1 dacprd1  obiee    4862722 May  8 22:15 server.20140508.2117.150.log
+-rw-r--r--   1 dacprd1  obiee       7307 May  8 23:15 server.20140508.2217.920.log
+-rw-r--r--   1 dacprd1  obiee       7307 May  9 00:15 server.20140508.2317.838.log
+-rw-r--r--   1 dacprd1  obiee       7673 May  9 01:15 server.20140509.0017.849.log
+-rw-r--r--   1 dacprd1  obiee       7308 May  9 02:15 server.20140509.0117.103.log
+-rw-r--r--   1 dacprd1  obiee       7674 May  9 03:15 server.20140509.0217.530.log
+-rw-r--r--   1 dacprd1  obiee       7308 May  9 04:15 server.20140509.0317.963.log
+-rw-r--r--   1 dacprd1  obiee       7308 May  9 05:15 server.20140509.0417.11.log
+-rw-r--r--   1 dacprd1  obiee       7674 May  9 06:15 server.20140509.0517.39.log
+-rw-r--r--   1 dacprd1  obiee       7308 May  9 07:15 server.20140509.0617.73.log
+-rw-r--r--   1 dacprd1  obiee       7308 May  9 08:15 server.20140509.0717.182.log
+
+49  INFO  Thu May 08 23:15:40 BST 2014  Non-server-state message from localhost(127.0.0.1) received
+50  SEVERE  Thu May 08 23:15:40 BST 2014  SERVER_NETWORK_MESSAGE: Halt request received: System exiting
+
+execute soa.delete_instances ( to_timestamp('2013-04-08','YYYY-MM-DD'),to_timestamp('2014-04-08','YYYY-MM-DD'),20000,60,to_timestamp('2014-04-08','YYYY-MM-DD'),false);
+
+
+############# SCENARIO 1 #####################
+SQL> SELECT count(xd.document_id) FROM xml_document xd WHERE NOT EXISTS (SELECT 1 FROM instance_payload ip WHERE ip.payload_key=xd.document_id)
+  2  AND NOT EXISTS (SELECT 1 FROM document_dlv_msg_ref ddmr WHERE ddmr.document_id = xd.document_id)
+  3  AND NOT EXISTS (SELECT 1 FROM xml_document_ref ddmr WHERE ddmr.document_id = xd.document_id)
+A  4  ND NOT EXISTS (SELECT 1 FROM document_ci_ref ddmr WHERE ddmr.document_id = xd.document_id);
+
+COUNT(XD.DOCUMENT_ID)
+---------------------
+                 9461
+
+SQL> select count(payload_key) from instance_payload ip where not exists ((select 1 from composite_instance ci where ip.instance_id = ci.id) UNION (select 1 from reference_instance ci where ip.instance_id = ci.id));
+
+COUNT(PAYLOAD_KEY)
+------------------
+                98
+
+############# SCENARIO 2 #####################				
+SQL> select count(message_guid) from dlv_message dm where not exists(select 1 from cube_instance ci where dm.cikey = ci.cikey) and dm.state in (2,3) and dm.receive_date < to_timestamp('2010-08-24 14','YYYY-MM-DD HH24');
+
+COUNT(MESSAGE_GUID)
+-------------------
+                  0
+
+############# SCENARIO 3 #####################					  
+SQL> select count(*) from XML_DOCUMENT_REF;
+
+  COUNT(*)
+----------
+         0
+
+############# SCENARIO 4 #####################		 
+SQL> select count(*) from VARIABLE_SENSOR_VALUES;
+
+  COUNT(*)
+----------
+       211
+
+SQL> select count(*) from ACTIVITY_SENSOR_VALUES;
+
+  COUNT(*)
+----------
+       169
+
+SQL>  select count(*) from COMPOSITE_SENSOR_VALUE;
+
+  COUNT(*)
+----------
+   1430015
+
+SQL> select count(*) from FAULT_SENSOR_VALUES;
+
+  COUNT(*)
+----------
+         0
+
+############# SCENARIO 5 #####################		 
+SQL> SELECT count(ad.CIKEY) from AUDIT_DETAILS ad where NOT EXISTS (SELECT 1 FROM COMPOSITE_INSTANCE cin where ad.CIKEY = cin.ID) and NOT EXISTS (SELECT 1 FROM CUBE_INSTANCE ci where ad.CIKEY = ci.CIKEY);
+
+COUNT(AD.CIKEY)
+---------------
+              0
+
+############# SCENARIO 6 #####################			 
+SQL> SELECT count(unique ECID) from CUBE_INSTANCE CT where NOT EXISTS(SELECT ECID FROM COMPOSITE_INSTANCE COMP where CT.ECID = COMP.ECID) and (CT.CMPST_ID IS NOT NULL OR CT.CMPST_ID <> '0') AND CT.STATE >= 5;
+
+COUNT(UNIQUEECID)
+-----------------
+                0
+				
+				
+SELECT count(xd.document_id) FROM xml_document xd WHERE NOT EXISTS (SELECT 1 FROM instance_payload ip WHERE ip.payload_key=xd.document_id) 
+AND NOT EXISTS (SELECT 1 FROM document_dlv_msg_ref ddmr WHERE ddmr.document_id = xd.document_id) 
+AND NOT EXISTS (SELECT 1 FROM xml_document_ref ddmr WHERE ddmr.document_id = xd.document_id) 
+AND NOT EXISTS (SELECT 1 FROM document_ci_ref ddmr WHERE ddmr.document_id = xd.document_id); 
+
+######################### STOPALL.sh #####################################
+/export/home/obiadev1/stopAll.sh
+opmnctl stopall
+
+ ${DOMAIN_HOME}/bin/stopManagedWebLogic.sh bi_server1
+
+${DOMAIN_HOME}/bin/stopWebLogic.sh
+
+kill -9 `jps |grep -i node |awk '{print $1}'`
+
+
+################ SOLARIS USERS #############################
+cat /etc/passwd
+
+
+yum install binutils-2*x86_64* glibc-2*x86_64* nss-softokn-freebl-3*x86_64* glibc-2*i686* nss-softokn-freebl-3*i686* compat-libstdc++-33*x86_64* 
+
+yum install glibc-2*x86_64* nss-softokn-freebl-3*x86_64*
+yum install glibc-2*i686* nss-softokn-freebl-3*i686*
+yum install compat-libstdc++-33*x86_64*
+yum install glibc-common-2*x86_64*
+yum install glibc-devel-2*x86_64*
+yum install glibc-devel-2*i686*
+yum install glibc-headers-2*x86_64*
+yum install elfutils-libelf-0*x86_64*
+yum install elfutils-libelf-devel-0*x86_64*
+yum install gcc-4*x86_64*
+yum install gcc-c++-4*x86_64*
+yum install ksh-*x86_64*
+yum install libaio-0*x86_64*
+yum install libaio-devel-0*x86_64*
+yum install libaio-0*i686*
+yum install libaio-devel-0*i686*
+yum install libgcc-4*x86_64*
+yum install libgcc-4*i686*
+yum install libstdc++-4*x86_64*
+yum install libstdc++-4*i686*
+yum install libstdc++-devel-4*x86_64*
+yum install make-3.81*x86_64*
+yum install numactl-devel-2*x86_64*
+yum install sysstat-9*x86_64*
+yum install compat-libstdc++-33*i686*
+yum install compat-libcap*
+
+
+yum install glibc-2*x86_64* nss-softokn-freebl-3*x86_64* glibc-2*i686* nss-softokn-freebl-3*i686* compat-libstdc++-33*x86_64* glibc-common-2*x86_64* glibc-devel-2*x86_64* glibc-devel-2*i686* glibc-headers-2*x86_64* elfutils-libelf-0*x86_64* elfutils-libelf-devel-0*x86_64* gcc-4*x86_64* gcc-c++-4*x86_64* ksh-*x86_64* libaio-0*x86_64* libaio-devel-0*x86_64* libaio-0*i686* libaio-devel-0*i686* libgcc-4*x86_64* libgcc-4*i686* libstdc++-4*x86_64* libstdc++-4*i686* libstdc++-devel-4*x86_64* make-3.81*x86_64* numactl-devel-2*x86_64* sysstat-9*x86_64* compat-libstdc++-33*i686* compat-libcap* -y
+
+##########################Creating users#########################
+oraw012:x:512:500::/home/oraw012:/bin/bash
+vitsupp:x:500:500::/home/vitsupp:/bin/bash
+
+groupadd vitsupp
+
+useradd demp007 -p Velocity123 -g demp007 -b /home/ -s /bin/bash 
+
+userdel -r vitsupp
+
+usermod -a -G vitsupp oras002
+
+###############Mounting NFS shares#########################
+mount -t nfs 10.10.160.22:/media/software/ /media/software
+
+10.10.160.22:/media/software     /media/software nfs     soft,rw,wsize=8192,rsize=8192,intr,user,timeo=15
+
+
+
+U001=
+        (DESCRIPTION=
+                (ADDRESS=(PROTOCOL=tcp)(HOST=v10emzs100.ncl.emss.data.net)(PORT=1522))
+            (CONNECT_DATA=
+                (SERVICE_NAME=U001)
+                (INSTANCE_NAME=U001)
+            )
+        )
+
+
+
+opatch apply -invPtrLoc /export/middleware/AIA/oraInst.loc -oh /export/middleware/AIA -jre /export/jrockit
+
+
+exit
+df
+mount /dev/cdrom /media/OL
+ls /media
+mount /dev/cdrom /media/ol
+df
+exit
+ls
+
+#######disable yum repos########
+https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/sec-Managing_Yum_Repositories.html
+yum repolist all
+yum-config-manager --disable public_ol6_latest
+yum update
+
+###############ODI CRED MAP#########################
+
+createCred(map="oracle.odi.credmap", key="SUPERVISOR", user="SUPERVISOR", password="Velos123", desc="ODI Login") 
+createCred(map="oracle.odi.credmap", key="base_domain", user="weblogic", password="Velos123", desc="WLS credentials")
+createCred(map="oracle.apps.security", key="SUPERVISOR", user="SUPERVISOR", password="Velos123", desc="ODI Login") 
+createCred(map="oracle.apps.security", key="weblogic", user="SUPERVISOR", password="Velos123", desc="ODI Login")
+createCred(map="oracle.aia.security", key="weblogic", user="VCP_ODI_REPO", password="Velocity123", desc="")
+
+
+###############DB BLOCK RECOVERY#################
+select OWNER, SEGMENT_NAME, SEGMENT_TYPE from DBA_EXTENTS where file_id = 12 and 221192 between block_id and (block_id + blocks - 1);
+
+OWNER	SEGMENT_NAME			SEGMENT_TYPE
+------- ----------------------  ---------------------------------------------------
+OLAP	W_PURCH_CYCLE_LINE_F	TABLE
+
+
+select t.ts#, s.header_file, s.header_block
+from v$tablespace t, dba_segments s
+where s.segment_name='W_PURCH_CYCLE_LINE_F'
+and t.name = s.tablespace_name;
+
+       TS# HEADER_FILE HEADER_BLOCK
+---------- ----------- ------------
+         6           6         3678
+
+dbv userid=system/Velos389 SEGMENT_ID=6.6.3678
+
+#################DEMANTRA###################
+
+Here are the possible statuses: 
+-1, -2 : The engine failed in the initialization phase.  Which means, before the engine manager created the engines. 
+ 0 : The engine stopped in the optimization phase.  Which means, after the engines were created. 
+ 1: The engine finished the run successfully. 
+ 2: Forecast was never calculated for the relevant column that is mentioned in FORE_COLUMN_NAME.
+ 
+select status, engine, engine_version,fore_column_name, START_DATE, TOTAL_RUN_TIME from forecast_history;
+ 
+Engine status
+http://10.10.160.23:8082/engineManager/EngineManagerStarterServlet?command=status
+
+Start Engine
+http://10.10.160.23:8082/engineManager/EngineManagerStarterServlet?command=start&mode=1&profile_id=1
+
+Restart Engine
+Note: Use this method if the Engine is already running. If the Engine is not running, this command will have 
+no effect.) - doesnt work 
+http://10.10.160.29:8082/engineManager/EngineManagerStarterServlet?command=restart&mode=1&profile_id=1 
+
+Stop Engine
+http://10.10.160.23:8082/engineManager/EngineManagerStarterServlet?command=stop&mode=1&profile_id=1
+
+
+http://10.10.160.23:8082/engineManager
+
+    <Entry>
+        <Key argument="EngineUnixPortConfig"/>
+        <Value type="int" argument="8083"/></Entry>
+
+####HEALTH CHECK DB################	
+How to Perform a Health Check on the Database (Doc ID 122669.1)
+
+select INDEX_NAME,INDEX_TYPE from all_indexes where TABLE_NAME='REFERENCE_INSTANCE'
+SQL> /
+
+INDEX_NAME                     INDEX_TYPE
+------------------------------ ---------------------------
+COMPOSITE_INSTANCE_VELOS_1     NORMAL
+REFERENCE_INSTANCE_VELOS_1     NORMAL
+REFERENCE_INSTANCE_ID          NORMAL
+REFERENCE_INSTANCE_CO_ID       NORMAL
+REFERENCE_INSTANCE_CDN_STATE   NORMAL
+REFERENCE_INSTANCE_STATE       NORMAL
+REFERENCE_INSTANCE_TIME_CDN    FUNCTION-BASED NORMAL
+REFERENCE_INSTANCE_ECID        NORMAL
+
+8 rows selected.
+
+
+SQL> ANALYZE INDEX REFERENCE_INSTANCE_CDN_STATE COMPUTE STATISTICS;
+
+Index analyzed.
+
+SQL> ANALYZE INDEX COMPOSITE_INSTANCE_VELOS_1 VALIDATE STRUCTURE;
+
+Index analyzed.
+
+################ACCOUNT UNLOCK#####################
+ALTER USER DBSNMP identified by dbsnmp ACCOUNT UNLOCK;
+
+################ Export DB schema #################
+CONN / AS SYSDBA
+ALTER USER scott IDENTIFIED BY tiger ACCOUNT UNLOCK;
+
+CREATE OR REPLACE DIRECTORY dem_exports AS '/home/oras004/exports';
+GRANT READ, WRITE ON DIRECTORY dem_exports TO system;
+
+expdp system/manager schemas=demantra directory=dem_exports dumpfile=dems004.dmp logfile=expdpdems004.log
+
+impdp system/Velos123 directory=dem_exports dumpfile=dems004.dmp logfile=impdpdems004.log 
+
+create user demantra identified by Velos123 default tablespace TS_DP;
+
+grant create session to demantra;
+
+grant unlimited tablespace to demantra;
+
+grant resource to demantra;
+
+grant sysdba to demantra;
+
+impdp \"/ as sysdba\" directory=dem_imports dumpfile=dems004.dmp logfile=impdpdems004.log
+
+##################TICKETS##############
+INC0636986 -  BW03 filesystems
+INC0636997 -  Create new zone v10emzs124 & file system
+INC0636993 -  Create OBIEE filesystems on v10emzs137	
+
+################X11 Forwarding######################
+Edit the /etc/ssh/sshd_config file, and uncomment the following line:
+X11Forwarding Yes
+
+/etc/init.d/sshd restart	
+
+check hostsfile to ensure correct
+
+################ extending/shrinking datafiles ####################
+alter database datafile '/u03/oradata/OBIDEV/bawdevind02.dbf' autoextend on next 1g maxsize 2g;
+
+ALTER DATABASE DATAFILE '/u03/oradata/OBIDEV/bawdevind02.dbf' RESIZE 1G;
+
+######################ant -f aia pip ###############################
+
+ant -f $AIA_HOME/Infrastructure/Install/AID/AIAInstallDriver.xml -DDeploymentPlan=$AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDEDP.xml -DPropertiesFile=$AIA_HOME/aia_instances/AIA/config/AIAInstallProperties.xml -l $AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDE.log
+
+ant -verbose -f $AIA_HOME/Infrastructure/Install/AID/AIAInstallDriver.xml -DDeploymentPlan=$AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDEDP.xml -DPropertiesFile=$AIA_HOME/aia_instances/AIA_VCP/config/AIAInstallProperties.xml -l $AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDE.log
+
+ant Uninstall -f $AIA_HOME/Infrastructure/Install/AID/AIAInstallDriver.xml -DPropertiesFile=$AIA_HOME/aia_instances/AIA/config/AIAInstallProperties.xml  -DDeploymentPlan=$AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDEUndeployDP.xml -l $AIA_HOME/pips/VCPJDE/DeploymentPlans/VCPJDEUndeployDP.log
+
+########### AIA Stack ################
+##################### AIA PIP 3.1 Stack ######################
+Oracle Application Integration Architecture Release 3.1
+Oracle WebLogic Server 11gR1 (10.3.4) and Coherence for Linux x86
+Oracle SOA Suite 11g Patch Set 3 (11.1.1.4.0)
+Oracle Application Integration Architecture Foundation Pack 11g Release 1 (11.1.1.4.0)
+Oracle Data Integrator 11g (11.1.1.3.0) for Linux x86 
+
+##################### AIA PIP 11.5/4 Stack ######################
+Oracle Application Integration Architecture Pre-built Integrations 11.5 Release
+Oracle WebLogic Server 11gR1 (10.3.6) Generic and Coherence
+Oracle SOA Suite 11g Patch Set 6 (11.1.1.7.0)
+Oracle Application Integration Architecture Foundation Pack 11gR1 PS6 (11.1.1.7.0)
+Oracle Application Integration Architecture Foundation Pack 11g Release 1 PS6 RUP2  - Patch that needs to be applied
+Oracle Data Integrator 11g (11.1.1.6.0) for Generic
+Oracle Value Chain Planning Integration Base Pack 11.1 - JDE E1 9.1  patches - ensure these are applied to JDE
+
+##################### Oracle Reccomended #####################
+JDE-E1 9.1
+VCP 12.2.3
+Weblogic 10.3.6
+ODI 11.1.1.6
+JDE-VCP PIP 11.4
+
+
+chgrp -R dba /export/ofmw003
+
+ofmw012:x:502:500::/home/ofmw012:/bin/bash
+vitsupp:x:1001:901::/home/vitsupp:/bin/bash
+
+groupadd -g 900 dba
+useradd -G dba -u 703 ofmu008
+usermod -G vitsupp dems004
+
+
+###################DB LINK######################
+
+CREATE DATABASE LINK "VCP_TO_ODIWORKREP"
+CONNECT TO T005_ODI_REPO IDENTIFIED BY Velocity123
+USING '(DESCRIPTION=
+(ADDRESS_LIST=
+(ADDRESS=(PROTOCOL=tcp)
+(HOST=10.10.160.38)
+(PORT=1526)))
+(CONNECT_DATA=(SID=T005)))';
+
+select sysdate from dual@VCP_TO_ODIWORKREP;
+
+#######################################################################
+
+dacbw03 auth key - CEAF2DA7DF2D7DC4D3A9674466F82FF1
+
+################## GRANT TO ALL TABLES IN SCHEMA ######################
+spool /tmp/grants.sql
+select 'grant all on '||table_name||' to apps;'
+from dba_tables where owner='DEMANTRA';
+spool off
+
+Login as user and run @/tmp/grants.sql
+
+/obibw03/dac/bifoundation/dac
+
+################ ORA 11g ACL ##############################
+
+ select * from DBA_NETWORK_ACLS;   - 0 rows returned
+select * from DBA_NETWORK_ACL_PRIVILEGES;    - 0 rows  
+
+HOST       LOWER_PORT UPPER_PORT ACL                       ACLID
+---------- ---------- ---------- ------------------------- --------------------------------
+*                                /sys/acls/OracleEBS.xml   6111A5EE3F7E9578E0402382C8136535
+localhost        8080       8080 /sys/acls/demantra.xml    00F88E3E900C73DAE0531FA00A0A636B
+
+
+
+BEGIN
+  DBMS_NETWORK_ACL_ADMIN.create_acl (
+    acl          => 'demantraEngine.xml', 
+    description  => 'LDAP ACL',
+    principal    => 'APPS_PROD_01',
+    is_grant     => TRUE, 
+    privilege    => 'connect',
+    start_date   => SYSTIMESTAMP,
+    end_date     => NULL);
+END;
+/
+
+BEGIN
+  DBMS_NETWORK_ACL_ADMIN.ASSIGN_ACL (
+     acl         => '/sys/acls/demantra.xml',
+     host        => '10.10.160.33',
+	lower_port  =>  8080,
+	upper_port  =>  8084);
+END;
+ /
+ 
+begin
+DBMS_NETWORK_ACL_ADMIN.UNASSIGN_ACL (acl => '/sys/acls/demantra.xml', host => '10.10.160.46', lower_port=>8083, upper_port=>8083);
+DBMS_NETWORK_ACL_ADMIN.ASSIGN_ACL (acl => '/sys/acls/demantra.xml', host => '10.10.160.46', lower_port=>8080, upper_port=>8084);
+commit;
+END;
+/ 
+
+
+
+CREATE OR REPLACE DIRECTORY DAT_DIR AS '/home/oras002/demantra_exports';
+GRANT READ, WRITE ON DIRECTORY DAT_DIR TO DEMANTRA;
+
+GRANT read, write ON DIRECTORY DAT_DIR TO DEMANTRA;
+GRANT read, write ON DIRECTORY BAD_DIR TO DEMANTRA;
+GRANT read, write ON DIRECTORY LOG_DIR TO DEMANTRA; 
+
+
+########################## DBA USER ROLES ############################
+object privs
+------------
+select owner||'.'||table_name, privilege from dba_tab_privs where grantee = '&1' order by 1,2;
+
+sys privs
+---------
+select privilege from dba_sys_privs where grantee = '&1' order by 1;
+
+roles
+-----
+select distinct d.granted_role, r.granted_role
+from dba_role_privs d, role_role_privs r
+where d.granted_role = r.role (+)
+and d.granted_role in (select drp.granted_role from dba_role_privs drp where grantee='&1');
+
+
+role obj privs
+--------------
+select owner||'.'||table_name, privilege from role_tab_privs where role = '&1' order by 1;
+
+
+role sys privs
+--------------
+select privilege from role_sys_privs where role = '&1' order by 1;
+
+
+29:AGBARR:FUSION_TR:DB:orat007:10.10.160.88:V06BASW01
+30:AGBARR:FUSION_TR:APP:ofmt007:10.10.160.86:V06BASW01
+31:AGBARR:DEMANTRA_TR:APP:dem007:10.10.160.87:V06BASW01
+32:AGBARR:EBS_TR:APP:applt007:10.10.160.85:V06BASW01
+33:AGBARR:EBS_TR:DB:orat007:10.10.160.85:V06BASW01
+
+10.10.160.22:/export/fmw/soap/w003/VCP    /export/fmw/soap/w003/VCP nfs
+
+DBMS_NETWORK_ACL_ADMIN.ASSIGN_ACL (acl => '/sys/acls/demantra.xml', host => '10.10.160.23', lower_port=>8080, upper_port=>8084);
+
+iambprcumb
+agbarr_bpr_cumb
+
+########### Ebiz URL ##################
+select home_url from icx_parameters;
+
+###################### 2020 RAC DB DOWN ################
+login as root
+set oracle environment - . oraenvto one of the dbs eg JDEDEV1
+[root@ts-pri-db01 oracle]# . oraenv
+ORACLE_SID = [JDEDEV1] ? +ASM1
+crsctl stat res -t
+
+--------------------------------------------------------------------------------
+NAME           TARGET  STATE        SERVER                   STATE_DETAILS
+--------------------------------------------------------------------------------
+Local Resources
+--------------------------------------------------------------------------------
+ora.CRS.dg
+               ONLINE  ONLINE       ts-pri-db01
+ora.DATA.dg
+               ONLINE  ONLINE       ts-pri-db01
+ora.DATA_JDEPROD_TEMP.dg
+               ONLINE  ONLINE       ts-pri-db01
+ora.FRA.dg
+               ONLINE  ONLINE       ts-pri-db01
+ora.LISTENER.lsnr
+               ONLINE  ONLINE       ts-pri-db01
+ora.asm
+               ONLINE  ONLINE       ts-pri-db01              Started
+ora.gsd
+               OFFLINE OFFLINE      ts-pri-db01
+ora.net1.network
+               ONLINE  ONLINE       ts-pri-db01
+ora.ons
+               ONLINE  ONLINE       ts-pri-db01
+ora.registry.acfs
+               ONLINE  ONLINE       ts-pri-db01
+--------------------------------------------------------------------------------
+Cluster Resources
+--------------------------------------------------------------------------------
+ora.LISTENER_SCAN1.lsnr
+      1        ONLINE  ONLINE       ts-pri-db01
+ora.cvu
+      1        ONLINE  ONLINE       ts-pri-db01
+ora.jdedev.db
+      1        ONLINE  ONLINE       ts-pri-db01              Open
+ora.oc4j
+      1        ONLINE  ONLINE       ts-pri-db01
+ora.scan1.vip
+      1        ONLINE  ONLINE       ts-pri-db01
+ora.soadev.db
+      1        ONLINE  ONLINE       ts-pri-db01              Open
+ora.soaprd.db
+      1        ONLINE  ONLINE       ts-pri-db01              Open
+ora.trac.db
+      1        ONLINE  ONLINE       ts-pri-db01              Open
+ora.ts-pri-db01.vip
+      1        ONLINE  ONLINE       ts-pri-db01
+
+
+crsctl disable crs
+crsctl stop crs -f
+
+crsctl enable crs
+crsctl start crs
+#10-15min
+crsctl stat res -t
+
+
+
+
+[root@ts-pri-db01 ~]# pvs
+  PV         VG         Fmt  Attr PSize   PFree
+  /dev/sda2  VolGroup00 lvm2 a-    99.88G  7.88G
+  /dev/sdb   VolGroup01 lvm2 a-    52.00G 22.00G
+  /dev/sdc   VolGroup02 lvm2 a-    52.00G  2.00G
+  /dev/sdd   VolGroup03 lvm2 a-   610.00G 10.00G
+[root@ts-pri-db01 ~]# lvs
+  LV           VG         Attr   LSize   Origin Snap%  Move Log Copy%  Convert
+  LogVol00     VolGroup00 -wi-ao  20.00G
+  LogVol01     VolGroup00 -wi-ao  32.00G
+  LogVol02     VolGroup00 -wi-ao  20.00G
+  LogVol03     VolGroup00 -wi-ao  10.00G
+  LogVol04     VolGroup00 -wi-ao  10.00G
+  LogVolOraBin VolGroup01 -wi-ao  30.00G
+  LogVolAppl   VolGroup02 -wi-ao  50.00G
+  LogVolBackup VolGroup03 -wi-ao 600.00G
+[root@ts-pri-db01 ~]#
+
+####################### EMSS COLD SNAPSHOT ######################
+v06emdisk001:>
+v06emdisk001:>
+v06emdisk001:> shares
+v06emdisk001:shares (v06z001p001)> ls
+Properties:
+                          pool = v06z001p001
+
+Projects:
+                        DryRun
+               Nr-13019065-EBS
+                        biprd0
+                       default
+                       ebsprd3
+                       ebssupp
+                       ebsu002
+                       ebsu004
+                        verify
+
+Children:
+                      replication => Manage remote replication
+                           schema => Define custom property schema
+
+v06emdisk001:shares (v06z001p001)> set pool=v06z002p001
+                          pool = v06z002p001
+v06emdisk001:shares (v06z002p001)> shares
+error: invalid command "shares"
+v06emdisk001:shares (v06z002p001)> ls
+Properties:
+                          pool = v06z002p001
+
+Projects:
+             Nr-13019065-OBIEE
+                        backup
+                       default
+                       obiprd1
+                       obipw01
+                           ops
+                       solaris
+                        vmware
+
+Children:
+                      replication => Manage remote replication
+                           schema => Define custom property schema
+
+v06emdisk001:shares (v06z002p001)> select obipw01 snapshots
+v06emdisk001:shares (v06z002p001) obipw01 snapshots> ls
+Children:
+                        automatic => Configure automatic snapshots
+
+v06emdisk001:shares (v06z002p001) obipw01 snapshots> snapshot 20141107_cold_golden
+v06emdisk001:shares (v06z002p001) obipw01 snapshots>
+
+
+### Find and change owner #####
+find . -user <owner>  |awk '{print "chown <newowner>:<newgroup> \"" $0 "\""}'  | sh#
+
+DAC DEV1 key
+7ADB8CF924C63DB6765EE4964694AC84
+DAC UAT key
+A8B4542A85F66294C19F5ED5F79D552
+
+########## EBS Verison ###########
+sqlapps
+select RELEASE_NAME from FND_PRODUCT_GROUPS;
+
+######## EBS PACKAGE BODY ##################
+
+select LINE, TEXT from dba_source where owner='JVS' and name='XX_MONITORING';
+
+
+##### Tonight 08/01/15 #####
+#### OBIEE ##### 
+			  PRD : INC0712630
+              UAT : Bounce the OBIEE environment
+   
+#### EBS ####
+              PRD : INC0711494
+              UAT : INC0701528
+      Description : 13120_OTL_EMP_VIEW_TERMINATED_ASSIGNMENTS into PRD3 ( UAT = INC0701528)
+     Window Start : 20150108_1800
+       Window End : 20150108_2200
+         Approved : A
+
+              PRD : INC0713501
+              UAT : INC0708446
+      Description : apply Patch 16998599:UNABLE TO TERMINATE FORMS SESSION to PRD3 ( UAT= INC0708446)
+     Window Start : 20150108_1800
+       Window End : 20150108_2200
+         Approved : A
+
+              PRD : INC0713504
+              UAT : INC0705534
+      Description : patches 10296435 / 16214128 applied to PRD3 in downtime 8th Jan 2014 ( UAT = INC0705534)
+     Window Start : 20150108_1800
+       Window End : 20150108_2200
+         Approved : A
+		 
+780312 - Urgent - Error on the Auto Invoice printing ( PRD = INC0714266 )		 
+
+
+
